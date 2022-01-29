@@ -1,7 +1,7 @@
 import "./editor_app.css";
 
 import { assertIsDefined } from "./error_utils";
-import { Editor } from "./editor/editor";
+import { Editor } from "./_editor/editor";
 import { useEffect, useRef } from "react";
 
 export interface EditorAppProps {}

@@ -1,0 +1,18 @@
+.Notebook-Root {
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.Notebook-BlockList {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.Notebook-BlockContainer {
+  margin-top: 24px;
+}

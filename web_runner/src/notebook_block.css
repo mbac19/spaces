@@ -1,0 +1,47 @@
+.NotebookBlock-Root {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.NotebookBlock-Levr {
+}
+
+.NotebookBlock-MarkdownEditor-Focus {
+  border: solid #9bbde4 1px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+.NotebookBlock-Content {
+  flex-grow: 1;
+}
+
+.NotebookBlock-Content-Editable {
+  cursor: pointer;
+}
+
+.NotebookBlock-CodeEditor {
+  border: solid #9bbde4 1px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+.NotebookBlock-CodeEditor-Focus {
+  border: solid #2980b9 1px;
+}
+
+@media (min-width: 600px) {
+  .NotebookBlock-LeftGutter {
+    min-width: 80px;
+    width: 80px;
+  }
+
+  .NotebookBlock-RightGutter {
+    min-width: 80px;
+    width: 80px;
+  }
+}
