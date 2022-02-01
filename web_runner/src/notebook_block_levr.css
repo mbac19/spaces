@@ -1,0 +1,13 @@
+.NotebookBlockLevr-Root {
+}
+
+.NotebookBlockLevr-CodeEditor {
+  border: solid var(--borderColor-editor) 1px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+.NotebookBlockLevr-CodeEditor-Focus {
+  border: solid var(--borderColor-selected) 1px;
+}

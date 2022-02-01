@@ -1,10 +1,16 @@
-import "./notebook_block.css";
+import "./notebook_block_levr.css";
 
 import AceEditor from "react-ace";
 import classNames from "classnames";
 
 import { DocumentBlock } from "./fs_api/document";
-import { NotebookBlockBaseProps } from "./notebook_block";
+import {
+  NotebookBlock,
+  NotebookBlockBaseProps,
+  NotebookBlockLeftGutter,
+  NotebookBlockMainContent,
+  NotebookBlockRightGutter,
+} from "./notebook_block";
 import { useState } from "react";
 
 import "ace-builds/src-noconflict/mode-lisp";
@@ -36,18 +42,13 @@ export function NotebookBlockLevr(props: NotebookBlockLevrProps) {
   }
 
   return (
-    <div
-      className={classNames({
-        "NotebookBlock-Root": true,
-        "NotebookBlock-Levr": true,
-      })}
-    >
-      <div className="NotebookBlock-LeftGutter"></div>
-      <div className="NotebookBlock-Content">
+    <NotebookBlock classes={{ root: "NotebookBlockLevr-Root" }} {...props}>
+      <NotebookBlockLeftGutter />
+      <NotebookBlockMainContent>
         <div
           className={classNames({
-            "NotebookBlock-CodeEditor": true,
-            "NotebookBlock-CodeEditor-Focus": props.isFocused,
+            "NotebookBlockLevr-CodeEditor": true,
+            "NotebookBlockLevr-CodeEditor-Focus": props.isFocused,
           })}
         >
           <AceEditor
@@ -65,8 +66,8 @@ export function NotebookBlockLevr(props: NotebookBlockLevrProps) {
             width="100%"
           />
         </div>
-      </div>
-      <div className="NotebookBlock-RightGutter"></div>
-    </div>
+      </NotebookBlockMainContent>
+      <NotebookBlockRightGutter />
+    </NotebookBlock>
   );
 }

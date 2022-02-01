@@ -1,10 +1,16 @@
-import "./notebook_block.css";
+import "./notebook_block_markdown.css";
 
 import AceEditor from "react-ace";
 import classNames from "classnames";
 import ReactMarkdown from "react-markdown";
 
 import { DocumentBlockMarkdown } from "./fs_api";
+import {
+  NotebookBlock,
+  NotebookBlockLeftGutter,
+  NotebookBlockMainContent,
+  NotebookBlockRightGutter,
+} from "./notebook_block";
 import {
   NotebookBlockBaseProps,
   NotebookBlockEditStatus,
@@ -50,26 +56,16 @@ export function NotebookBlockMarkdown(props: NotebookBlockMDProps) {
   }
 
   return (
-    <div
-      className={classNames({
-        "NotebookBlock-Root": true,
-        "NotebookBlock-Markdown": true,
-      })}
-    >
-      <div className="NotebookBlock-LeftGutter"></div>
-      <div
-        className={classNames({
-          "NotebookBlock-Content": true,
-          "NotebookBlock-Content-Editable":
-            props.editStatus !== NotebookBlockEditStatus.NOT_EDITABLE,
-        })}
-        onDoubleClick={onDoubleClickContent}
+    <NotebookBlock classes={{ root: "NotebookBlockMarkdown-Root" }} {...props}>
+      <NotebookBlockLeftGutter />
+      <NotebookBlockMainContent
         onClick={onClickContent}
+        onDoubleClick={onDoubleClickContent}
       >
         <div
           className={classNames({
-            "NotebookBlock-MarkdownEditor": true,
-            "NotebookBlock-MarkdownEditor-Focus": isFocused || isEditing,
+            "NotebookBlockMarkdown-Editor": true,
+            "NotebookBlockMarkdown-Editor-Focus": isFocused || isEditing,
           })}
         >
           {!isEditing && <ReactMarkdown>{content}</ReactMarkdown>}
@@ -97,8 +93,8 @@ export function NotebookBlockMarkdown(props: NotebookBlockMDProps) {
             />
           )}
         </div>
-      </div>
-      <div className="NotebookBlock-RightGutter"></div>
-    </div>
+      </NotebookBlockMainContent>
+      <NotebookBlockRightGutter />
+    </NotebookBlock>
   );
 }
