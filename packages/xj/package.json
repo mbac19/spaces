@@ -1,0 +1,29 @@
+{
+  "name": "@levr/xj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "clean": "rimraf node_modules",
+    "exec": "ts-node bin/exec.ts --lib-core=lib_core.el",
+    "repl": "ts-node bin/repl.ts",
+    "test:src": "jest",
+    "test:lang": "ts-node bin/tests ."
+  },
+  "author": "Brendan McNamara",
+  "license": "ISC",
+  "dependencies": {
+    "@levr/error_utils": "../error_utils",
+    "inversify": "6.0.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.13",
+    "chalk": "^4.1.2",
+    "jest": "^26.6.3",
+    "ts-node": "^10.2.1",
+    "ts-jest": "^26.5.5",
+    "typescript": "^4.3.5"
+  }
+}

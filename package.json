@@ -16,6 +16,7 @@
   },
   "workspaces": [
     "./packages/error_utils",
+    "./packages/xj",
     "./packages/xlisp",
     "./levr-playground",
     "./web_runner"
