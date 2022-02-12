@@ -35,13 +35,10 @@ export function NotebookBlockMarkdown(props: NotebookBlockMDProps) {
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  function onClickContent() {
-    console.log("CLICK CONTENT");
-  }
+  function onClickContent() {}
 
   function onDoubleClickContent() {
     setIsEditing(true);
-    console.log("DOUBLE CLICK CONTENT");
   }
 
   function onChangeEditor(content: string) {
@@ -51,7 +48,6 @@ export function NotebookBlockMarkdown(props: NotebookBlockMDProps) {
   }
 
   function onEval() {
-    console.log("ON EVAL");
     setIsEditing(false);
   }
 

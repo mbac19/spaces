@@ -17,8 +17,8 @@
   cursor: pointer;
 }
 
-.NotebookBlock-Root:focus .NotebookBlock-Content {
-  outline: solid red 1px;
+.NotebookBlock-Root:focus .NotebookBlock-Content-AllowFocusHighlight {
+  outline: solid var(--outlineColor-focus) 1px;
 }
 
 @media (min-width: 600px) {

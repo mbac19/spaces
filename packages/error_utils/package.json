@@ -1,0 +1,20 @@
+{
+  "name": "@levr/error_utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf node_modules dist",
+    "clean:lock": "rm package-lock.json",
+    "test": "jest"
+  },
+  "author": "Brendan McNamara",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "jest": "^27.0.0",
+    "typescript": "^4.3.5"
+  }
+}

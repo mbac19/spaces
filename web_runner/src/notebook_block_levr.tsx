@@ -41,8 +41,16 @@ export function NotebookBlockLevr(props: NotebookBlockLevrProps) {
     props.onRequestEdit();
   }
 
+  function onEval() {
+    console.log("EVAL");
+  }
+
   return (
-    <NotebookBlock classes={{ root: "NotebookBlockLevr-Root" }} {...props}>
+    <NotebookBlock
+      allowFocusHighlight={false}
+      classes={{ root: "NotebookBlockLevr-Root" }}
+      {...props}
+    >
       <NotebookBlockLeftGutter />
       <NotebookBlockMainContent>
         <div
@@ -52,6 +60,13 @@ export function NotebookBlockLevr(props: NotebookBlockLevrProps) {
           })}
         >
           <AceEditor
+            commands={[
+              {
+                name: "eval",
+                bindKey: { win: "Shift-Enter", mac: "Shift-Enter" },
+                exec: onEval,
+              },
+            ]}
             highlightActiveLine={false}
             mode="lisp"
             onBlur={onBlurEditor}
@@ -66,6 +81,7 @@ export function NotebookBlockLevr(props: NotebookBlockLevrProps) {
             width="100%"
           />
         </div>
+        <div className="NotebookBlockLevr-Logs">Logs Here</div>
       </NotebookBlockMainContent>
       <NotebookBlockRightGutter />
     </NotebookBlock>

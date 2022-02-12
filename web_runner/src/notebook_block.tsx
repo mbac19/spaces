@@ -5,6 +5,7 @@ import React, { useContext } from "react";
 import { assertIsDefined } from "./error_utils";
 
 export interface NotebookBlockBaseProps {
+  allowFocusHighlight?: boolean;
   editStatus: NotebookBlockEditStatus;
   isFocused: boolean;
   onRequestEdit: () => void;
@@ -69,6 +70,8 @@ export function NotebookBlockMainContent(props: NotebookBlockMainContentProps) {
     <div
       className={classNames({
         "NotebookBlock-Content": true,
+        "NotebookBlock-Content-AllowFocusHighlight":
+          notebookCtx.allowFocusHighlight ?? true,
         "NotebookBlock-Content-Editable":
           notebookCtx.editStatus !== NotebookBlockEditStatus.NOT_EDITABLE,
       })}

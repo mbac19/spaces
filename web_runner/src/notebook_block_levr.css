@@ -1,13 +1,25 @@
 .NotebookBlockLevr-Root {
 }
 
-.NotebookBlockLevr-CodeEditor {
+.NotebookBlock-Root:not(:focus) .NotebookBlockLevr-CodeEditor {
   border: solid var(--borderColor-editor) 1px;
+}
+
+.NotebookBlock-Root:focus .NotebookBlockLevr-CodeEditor {
+  border: solid var(--outlineColor-focus) 1px;
+}
+
+.NotebookBlockLevr-CodeEditor {
   border-radius: 2px;
   box-sizing: border-box;
   padding: 4px;
 }
 
 .NotebookBlockLevr-CodeEditor-Focus {
-  border: solid var(--borderColor-selected) 1px;
+}
+
+.NotebookBlockLevr-Logs {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-primary);
+  padding: var(--spacing-standard) 0;
 }

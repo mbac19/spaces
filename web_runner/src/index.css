@@ -18,4 +18,14 @@ code {
   --borderColor-selected: #2980b9;
 
   --borderColor-selectedDisabled: #efefef;
+
+  --font-family-mono: source-code-pro, Menlo, Monaco, Consolas, monospace;
+
+  --font-size-primary: 14px;
+
+  --outlineColor-focus: red;
+
+  --spacing-standard: 20px;
+
+  --spacing-small: 8px;
 }

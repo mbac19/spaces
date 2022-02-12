@@ -13,5 +13,11 @@
     "minimist": "^1.2.5",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
-  }
+  },
+  "workspaces": [
+    "./packages/error_utils",
+    "./packages/xlisp",
+    "./levr-playground",
+    "./web_runner"
+  ]
 }
