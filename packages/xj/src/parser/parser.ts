@@ -1,5 +1,5 @@
-import { AST } from "../ast";
+import { ASTNode } from "../ast";
 
 export interface Parser<Source> {
-  parse(source: Source): AST;
+  parse(source: Source): ASTNode;
 }

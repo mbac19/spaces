@@ -1,5 +1,5 @@
-import { AST } from "../ast";
+import { ASTNode } from "../ast";
 
 export interface Interpreter {
-  eval(node: AST): AST;
+  eval(node: ASTNode): ASTNode;
 }

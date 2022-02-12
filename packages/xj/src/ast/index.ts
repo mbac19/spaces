@@ -1,1 +1,1 @@
-export type AST = Object;
+export * from "./ast";
