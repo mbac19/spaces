@@ -1,5 +1,6 @@
 import { ASTNode } from "../ast";
+import { Context } from "../context";
 
 export interface Interpreter {
-  eval(node: ASTNode): ASTNode;
+  eval(context: Context, node: ASTNode): ASTNode;
 }
