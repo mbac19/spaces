@@ -18,7 +18,15 @@ export interface IContext {
 
   makeChildContext(localScope?: Scope): IContext;
 
-  makeModuleContext(node: ASTNodeModule, localScope?: Scope): IModuleContext;
+  makeChildCallableContext(
+    params: Array<ASTNode>,
+    localScope?: Scope
+  ): ICallableContext;
+
+  makeChildModuleContext(
+    node: ASTNodeModule,
+    localScope?: Scope
+  ): IModuleContext;
 }
 
 /**
@@ -54,7 +62,7 @@ export interface ContextDef {
   parent?: Context;
 }
 
-export class Context implements IContext {
+export class Context implements IContext, ICallableContext, IModuleContext {
   private unassignedKeyParam: string | undefined;
 
   private readonly keyToParam: Record<string, ASTNode> | undefined;
@@ -85,7 +93,14 @@ export class Context implements IContext {
     return new Context({ localScope, parent: this });
   }
 
-  public makeModuleContext(
+  public makeChildCallableContext(
+    params: Array<ASTNode>,
+    localScope: Scope | undefined = undefined
+  ): ICallableContext {
+    return new Context({ localScope, parent: this });
+  }
+
+  public makeChildModuleContext(
     node: ASTNodeModule,
     localScope: Scope | undefined
   ): IModuleContext {

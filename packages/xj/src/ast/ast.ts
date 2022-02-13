@@ -5,13 +5,17 @@ export type ASTNode =
   | ASTNodeEfrl
   | ASTNodeEfrm
   | ASTNodeKey
+  | ASTNodeLambda
   | ASTNodeModule
   | ASTNodeNumber
   | ASTNodeString
   | ASTNodeSymbol
-  | ASTNodeSystemRef;
+  | ASTNodeSystemRef
+  | ASTNodeVoid;
 
-export type ASTNodeCallable = ASTNodeSystemRef;
+export type Key = string;
+
+export type ASTNodeCallable = ASTNodeLambda | ASTNodeSystemRef;
 
 export enum ASTNodeType {
   BOOLEAN = "BOOLEAN",
@@ -20,11 +24,14 @@ export enum ASTNodeType {
   EFRL = "ERL",
   EFRM = "ERM",
   KEY = "KEY",
+  LAMBDA = "LAMBDA",
   MODULE = "MODULE",
   NUMBER = "NUMBER",
+  PARAM = "PARAM",
   STRING = "STRING",
   SYMBOL = "SYMBOL",
   SYSTEM_REF = "SYSTEM_REF",
+  VOID = "VOID",
 }
 
 export interface ASTNodeBoolean {
@@ -34,7 +41,7 @@ export interface ASTNodeBoolean {
 
 export interface ASTNodeCall {
   type: ASTNodeType.CALL;
-  callable: ASTNode;
+  callable: ASTNodeCallable;
   params: Array<ASTNode>;
 }
 
@@ -51,12 +58,17 @@ export interface ASTNodeEfrl {
 
 export interface ASTNodeEfrm {
   type: ASTNodeType.EFRM;
-  form: Array<ASTNode>;
+  value: Array<ASTNode>;
 }
 
 export interface ASTNodeKey {
   type: ASTNodeType.KEY;
   key: string;
+}
+
+export interface ASTNodeLambda {
+  type: ASTNodeType.LAMBDA;
+  body: Array<ASTNode>;
 }
 
 export interface ASTNodeModule {
@@ -68,6 +80,11 @@ export interface ASTNodeModule {
 export interface ASTNodeNumber {
   type: ASTNodeType.NUMBER;
   value: number;
+}
+
+export interface ASTNodeParam {
+  type: ASTNodeType.PARAM;
+  ref: number | Key;
 }
 
 export interface ASTNodeString {
@@ -83,4 +100,8 @@ export interface ASTNodeSymbol {
 export interface ASTNodeSystemRef {
   type: ASTNodeType.SYSTEM_REF;
   symbol: string;
+}
+
+export interface ASTNodeVoid {
+  type: ASTNodeType.VOID;
 }

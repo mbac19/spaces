@@ -5,11 +5,13 @@ import {
   ASTNodeCallable,
   ASTNodeDefine,
   ASTNodeEfrl,
+  ASTNodeLambda,
   ASTNodeNumber,
   ASTNodeString,
   ASTNodeSymbol,
   ASTNodeSystemRef,
   ASTNodeType,
+  ASTNodeVoid,
 } from "../ast";
 
 export function Boolean(value: boolean): ASTNodeBoolean {
@@ -31,6 +33,10 @@ export function Efrl(...form: Array<ASTNode>): ASTNodeEfrl {
   return { type: ASTNodeType.EFRL, form };
 }
 
+export function Lambda(...body: Array<ASTNode>): ASTNodeLambda {
+  return { type: ASTNodeType.LAMBDA, body };
+}
+
 export function Number(value: number): ASTNodeNumber {
   return { type: ASTNodeType.NUMBER, value };
 }
@@ -45,4 +51,8 @@ export function Symb(value: string): ASTNodeSymbol {
 
 export function SystemRef(symbol: string): ASTNodeSystemRef {
   return { type: ASTNodeType.SYSTEM_REF, symbol };
+}
+
+export function Void(): ASTNodeVoid {
+  return { type: ASTNodeType.VOID };
 }

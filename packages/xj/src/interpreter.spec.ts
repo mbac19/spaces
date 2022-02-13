@@ -1,6 +1,16 @@
 import * as Types from "./types";
 
-import { Boolean, Efrl, Define, Number, String, Symb } from "./interface";
+import {
+  Boolean,
+  Call,
+  Efrl,
+  Define,
+  Lambda,
+  Number,
+  String,
+  Symb,
+  Void,
+} from "./interface";
 import { Container } from "inversify";
 import { Interpreter } from "./interpreter";
 import { performBind } from "./inversify.config";
@@ -30,8 +40,13 @@ describe("interpreter", () => {
   });
 
   test("string self-evaluates", () => {
-    let program = String("hello");
+    const program = String("hello");
     expect(interpreter.eval(baseContext, program)).toEqual(String("hello"));
+  });
+
+  test("lambda self-evaluates", () => {
+    const program = Call(Lambda());
+    expect(interpreter.eval(baseContext, program)).toEqual(Void());
   });
 
   describe("define", () => {
@@ -52,13 +67,28 @@ describe("interpreter", () => {
   });
 
   describe("efrl", () => {
-    test("empty form throws error", () => {
-      expect(() => interpreter.eval(baseContext, Efrl())).toThrow();
+    test("empty form returns void", () => {
+      expect(interpreter.eval(baseContext, Efrl())).toEqual(Void());
     });
 
     test("returns last evaluation of form", () => {
       const program = Efrl(Number(100), String("hello world"), Number(42));
       expect(interpreter.eval(baseContext, program)).toEqual(Number(42));
+    });
+  });
+
+  describe("calling", () => {
+    test("calling empty lambda evaluates to void", () => {
+      const program = Call(Lambda());
+      expect(interpreter.eval(baseContext, program)).toEqual(Void());
+    });
+
+    test("calling lambda evaluates last statement", () => {
+      const program = Call(Lambda(Number(100)));
+      expect(interpreter.eval(baseContext, program)).toEqual(Number(100));
+    });
+
+    test("calling lambda with parameter", () => {
     });
   });
 
