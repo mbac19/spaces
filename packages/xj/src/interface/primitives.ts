@@ -8,6 +8,9 @@ import {
   ASTNodeEfrm,
   ASTNodeExport,
   ASTNodeLambda,
+  ASTNodeLogicalAnd,
+  ASTNodeLogicalNot,
+  ASTNodeLogicalOr,
   ASTNodeModule,
   ASTNodeNumber,
   ASTNodeParam,
@@ -19,6 +22,10 @@ import {
   ASTNodeVoid,
 } from "../ast";
 import { Scope } from "../context";
+
+export function And(value: Array<ASTNode>): ASTNodeLogicalAnd {
+  return { type: ASTNodeType.LOGICAL_AND, value };
+}
 
 export function Boolean(value: boolean): ASTNodeBoolean {
   return { type: ASTNodeType.BOOLEAN, value };
@@ -51,8 +58,16 @@ export function Lambda(...body: Array<ASTNode>): ASTNodeLambda {
   return { type: ASTNodeType.LAMBDA, body };
 }
 
+export function Not(value: ASTNode): ASTNodeLogicalNot {
+  return { type: ASTNodeType.LOGICAL_NOT, value };
+}
+
 export function Number(value: number): ASTNodeNumber {
   return { type: ASTNodeType.NUMBER, value };
+}
+
+export function Or(value: Array<ASTNode>): ASTNodeLogicalOr {
+  return { type: ASTNodeType.LOGICAL_OR, value };
 }
 
 export function Param(ref: number | string): ASTNodeParam {

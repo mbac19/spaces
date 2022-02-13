@@ -15,6 +15,7 @@ import {
   Symb,
   Void,
   SystemRef,
+  Not,
 } from "./interface";
 import { ASTNodeType } from "./ast";
 import { Container } from "inversify";
@@ -81,6 +82,13 @@ describe("lib_core", () => {
     test("throws when trying to reference something that does not exist", () => {
       const program = Symb("x");
       expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+  });
+
+  describe("logical", () => {
+    test("logical not inverts boolean", () => {
+      const program = Not(Boolean(true));
+      expect(interpreter.eval(baseContext, program)).toEqual(Boolean(false));
     });
   });
 

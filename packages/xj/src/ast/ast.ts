@@ -8,6 +8,9 @@ export type ASTNode =
   | ASTNodeImport
   | ASTNodeKey
   | ASTNodeLambda
+  | ASTNodeLogicalAnd
+  | ASTNodeLogicalOr
+  | ASTNodeLogicalNot
   | ASTNodeModule
   | ASTNodeNumber
   | ASTNodeParam
@@ -25,11 +28,15 @@ export type ASTNodeReference = ASTNodeParam | ASTNodeSymbol;
 export enum ASTNodeType {
   BOOLEAN = "BOOLEAN",
   CALL = "CALL",
+  COND = "COND",
   DEFINE = "DEFINE",
   EFRL = "EFRL",
   EFRM = "EFRM",
   EXPORT = "EXPORT",
   IMPORT = "IMPORT",
+  LOGICAL_AND = "LOGICAL_AND",
+  LOGICAL_OR = "LOGICAL_OR",
+  LOGICAL_NOT = "LOGICAL_NOT",
   KEY = "KEY",
   LAMBDA = "LAMBDA",
   MODULE = "MODULE",
@@ -92,6 +99,21 @@ export interface ASTNodeKey {
 export interface ASTNodeLambda {
   type: ASTNodeType.LAMBDA;
   body: Array<ASTNode>;
+}
+
+export interface ASTNodeLogicalAnd {
+  type: ASTNodeType.LOGICAL_AND;
+  value: Array<ASTNode>;
+}
+
+export interface ASTNodeLogicalOr {
+  type: ASTNodeType.LOGICAL_OR;
+  value: Array<ASTNode>;
+}
+
+export interface ASTNodeLogicalNot {
+  type: ASTNodeType.LOGICAL_NOT;
+  value: ASTNode;
 }
 
 export interface ASTNodeModule {
