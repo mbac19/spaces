@@ -1,11 +1,19 @@
 import * as Types from "../types";
 
 import { AnyLibCallable, Lib } from "../lib";
-import { ASTNode, ASTNodeType, ASTNodeVoid, isCallableNode } from "../ast";
+import {
+  ASTNode,
+  ASTNodeBoolean,
+  ASTNodeType,
+  ASTNodeVoid,
+  isCallableNode,
+  isTruthy,
+} from "../ast";
 import { IContext, isCallableContext } from "../context";
 import { inject, injectable } from "inversify";
 import { Interpreter } from "./interpreter";
 import {
+  InvalidArguments,
   InvalidCallError,
   MalformedProgramError,
   UnresolvedReferenceError,
@@ -66,6 +74,49 @@ export class STDInterpreter implements Interpreter {
 
       case ASTNodeType.LAMBDA:
         return node;
+
+      case ASTNodeType.LOGICAL_AND: {
+        if (node.value.length < 2) {
+          throw new InvalidArguments();
+        }
+
+        let last: ASTNode;
+
+        for (const next of node.value) {
+          last = this.eval(context, next);
+
+          if (!isTruthy(last)) {
+            return last;
+          }
+        }
+
+        // @ts-ignore
+        return last;
+      }
+
+      case ASTNodeType.LOGICAL_NOT:
+        return isTruthy(this.eval(context, node.value))
+          ? FALSE_NODE
+          : TRUE_NODE;
+
+      case ASTNodeType.LOGICAL_OR: {
+        if (node.value.length < 2) {
+          throw new InvalidArguments();
+        }
+
+        let last: ASTNode;
+
+        for (const next of node.value) {
+          last = this.eval(context, next);
+
+          if (isTruthy(last)) {
+            return last;
+          }
+        }
+
+        // @ts-ignore
+        return last;
+      }
 
       case ASTNodeType.MODULE:
         return node;
@@ -146,3 +197,7 @@ export class STDInterpreter implements Interpreter {
 // -----------------------------------------------------------------------------
 
 const VOID_NODE: ASTNodeVoid = { type: ASTNodeType.VOID };
+
+const TRUE_NODE: ASTNodeBoolean = { type: ASTNodeType.BOOLEAN, value: true };
+
+const FALSE_NODE: ASTNodeBoolean = { type: ASTNodeType.BOOLEAN, value: false };

@@ -24,3 +24,8 @@ export class UnresolvedReferenceError extends Error {}
  * not exist.
  */
 export class UnresolvedSystemCall extends Error {}
+
+/**
+ * Throws when the arguments provided to a function are invalid.
+ */
+export class InvalidArguments extends Error {}

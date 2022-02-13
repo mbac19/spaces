@@ -9,8 +9,8 @@ export type ASTNode =
   | ASTNodeKey
   | ASTNodeLambda
   | ASTNodeLogicalAnd
-  | ASTNodeLogicalOr
   | ASTNodeLogicalNot
+  | ASTNodeLogicalOr
   | ASTNodeModule
   | ASTNodeNumber
   | ASTNodeParam

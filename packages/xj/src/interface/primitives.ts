@@ -23,7 +23,7 @@ import {
 } from "../ast";
 import { Scope } from "../context";
 
-export function And(value: Array<ASTNode>): ASTNodeLogicalAnd {
+export function And<T extends AtLeastTwoNodes>(...value: T): ASTNodeLogicalAnd {
   return { type: ASTNodeType.LOGICAL_AND, value };
 }
 
@@ -66,7 +66,7 @@ export function Number(value: number): ASTNodeNumber {
   return { type: ASTNodeType.NUMBER, value };
 }
 
-export function Or(value: Array<ASTNode>): ASTNodeLogicalOr {
+export function Or<T extends AtLeastTwoNodes>(...value: T): ASTNodeLogicalOr {
   return { type: ASTNodeType.LOGICAL_OR, value };
 }
 
@@ -93,3 +93,5 @@ export function SystemRef(symbol: string): ASTNodeSystemRef {
 export function Void(): ASTNodeVoid {
   return { type: ASTNodeType.VOID };
 }
+
+type AtLeastTwoNodes = [ASTNode, ASTNode, ...Array<ASTNode>];

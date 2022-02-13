@@ -16,6 +16,8 @@ import {
   Void,
   SystemRef,
   Not,
+  And,
+  Or,
 } from "./interface";
 import { ASTNodeType } from "./ast";
 import { Container } from "inversify";
@@ -87,8 +89,100 @@ describe("lib_core", () => {
 
   describe("logical", () => {
     test("logical not inverts boolean", () => {
-      const program = Not(Boolean(true));
+      expect(interpreter.eval(baseContext, Not(Boolean(true)))).toEqual(
+        Boolean(false)
+      );
+
+      expect(interpreter.eval(baseContext, Not(Boolean(false)))).toEqual(
+        Boolean(true)
+      );
+    });
+
+    test("logical not sets truthy values to false", () => {
+      const program = Not(Module({}));
       expect(interpreter.eval(baseContext, program)).toEqual(Boolean(false));
+    });
+
+    test("logical not sets falsy values to true", () => {
+      const program = Not(Void());
+      expect(interpreter.eval(baseContext, program)).toEqual(Boolean(true));
+    });
+
+    test("logical and multiple boolean values", () => {
+      const table = [
+        {
+          input: And(Boolean(false), Boolean(false)),
+          expected: Boolean(false),
+        },
+        {
+          input: And(Boolean(true), Boolean(false)),
+          expected: Boolean(false),
+        },
+        {
+          input: And(Boolean(false), Boolean(true)),
+          expected: Boolean(false),
+        },
+        {
+          input: And(Boolean(true), Boolean(true)),
+          expected: Boolean(true),
+        },
+      ];
+
+      for (const { input, expected } of table) {
+        expect(interpreter.eval(baseContext, input)).toEqual(expected);
+      }
+    });
+
+    test("logical and returns first falsy argument", () => {
+      expect(
+        interpreter.eval(baseContext, And(Module({}), Void(), Boolean(false)))
+      ).toEqual(Void());
+    });
+
+    test("logical and returns last argument if all truthy", () => {
+      expect(
+        interpreter.eval(
+          baseContext,
+          And(Module({}), Boolean(true), Number(100))
+        )
+      ).toEqual(Number(100));
+    });
+
+    test("logical or boolean values", () => {
+      const table = [
+        {
+          input: Or(Boolean(false), Boolean(false)),
+          expected: Boolean(false),
+        },
+        {
+          input: Or(Boolean(true), Boolean(false)),
+          expected: Boolean(true),
+        },
+        {
+          input: Or(Boolean(false), Boolean(true)),
+          expected: Boolean(true),
+        },
+        {
+          input: Or(Boolean(true), Boolean(true)),
+          expected: Boolean(true),
+        },
+      ];
+
+      for (const { input, expected } of table) {
+        expect(interpreter.eval(baseContext, input)).toEqual(expected);
+      }
+    });
+
+    test("logical or returns first truthy argument", () => {
+      expect(
+        interpreter.eval(baseContext, Or(Number(100), Boolean(true)))
+      ).toEqual(Number(100));
+    });
+
+    test("logical or returns last falsy argument if all falsy", () => {
+      expect(
+        interpreter.eval(baseContext, Or(Boolean(false), Number(0)))
+      ).toEqual(Number(0));
     });
   });
 
