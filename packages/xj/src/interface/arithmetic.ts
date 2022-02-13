@@ -1,4 +1,4 @@
-import { Add as AddLib } from "../lib_core/add";
+import { Add as AddLib } from "../lib_std/add";
 import { ASTNode } from "../ast";
 import { Call, SystemRef } from "./primitives";
 

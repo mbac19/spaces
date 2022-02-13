@@ -2,6 +2,6 @@ import { Add } from "./add";
 
 export * from "./constants";
 
-export const LibCore = {
+export const LibSTD = {
   [Add.symbol]: Add,
 };

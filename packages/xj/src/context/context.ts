@@ -1,5 +1,5 @@
 import { assert, undefinedThrows } from "@levr/error_utils";
-import { ASTNode, ASTNodeModule, isKeyNode } from "../ast";
+import { ASTNode, ASTNodeModule, ASTNodeType, isKeyNode } from "../ast";
 import { Scope } from "./scope";
 
 export interface IContext {
@@ -23,17 +23,17 @@ export interface IContext {
     localScope?: Scope
   ): ICallableContext;
 
-  makeChildModuleContext(
-    node: ASTNodeModule,
-    localScope?: Scope
-  ): IModuleContext;
+  makeChildModuleContext(localScope?: Scope): IModuleContext;
 }
 
 /**
- * A context from within a module.
+ * A context from within a form that is in the process of creating a module.
  */
 export interface IModuleContext extends IContext {
-  getModule(): ASTNodeModule;
+  /**
+   * Generate a module node from the current context.
+   */
+  makeModule(): ASTNodeModule;
 
   /**
    * Sets a variable on the scope that will be exposed on the node.
@@ -41,7 +41,7 @@ export interface IModuleContext extends IContext {
    * Note that the expose method is meant only for contexts associated
    * with modules.
    */
-  setExposed(identifier: string, node: ASTNode): void;
+  setExport(identifier: string, node: ASTNode): void;
 }
 
 /**
@@ -56,8 +56,8 @@ export interface ICallableContext extends IContext {
 }
 
 export interface ContextDef {
-  localScope?: Scope | undefined;
-  module?: ASTNodeModule;
+  localScope?: Scope;
+  moduleScope?: Scope;
   params?: Array<ASTNode>;
   parent?: Context;
 }
@@ -73,11 +73,18 @@ export class Context implements IContext, ICallableContext, IModuleContext {
 
   private readonly localScope: Scope;
 
-  private readonly module: ASTNodeModule | undefined;
+  public readonly moduleExports: Scope | undefined;
+
+  private readonly moduleScope: Scope | undefined;
 
   constructor(def: ContextDef) {
     this.parent = def.parent;
     this.localScope = def.localScope ?? {};
+
+    if (def.moduleScope !== undefined) {
+      this.moduleScope = def.moduleScope;
+      this.moduleExports = {};
+    }
 
     if (def.params !== undefined) {
       this.keyToParam = {};
@@ -100,18 +107,29 @@ export class Context implements IContext, ICallableContext, IModuleContext {
     return new Context({ localScope, params, parent: this });
   }
 
-  public makeChildModuleContext(
-    node: ASTNodeModule,
-    localScope: Scope | undefined
-  ): IModuleContext {
-    return new Context({ localScope, module: node, parent: this });
+  public makeChildModuleContext(localScope: Scope | undefined): IModuleContext {
+    return new Context({ localScope, moduleScope: {}, parent: this });
+  }
+
+  public makeModule(): ASTNodeModule {
+    if (this.moduleExports === undefined || this.moduleScope === undefined) {
+      throw Error("Trying to make a module from an invalid context");
+    }
+
+    return {
+      type: ASTNodeType.MODULE,
+      exports: this.moduleExports,
+    };
   }
 
   public get(identifier: string): ASTNode | undefined {
     if (this.localScope !== undefined && identifier in this.localScope) {
       return this.localScope[identifier];
-    } else if (this.module !== undefined && identifier in this.module.scope) {
-      return this.module.scope[identifier];
+    } else if (
+      this.moduleScope !== undefined &&
+      identifier in this.moduleScope
+    ) {
+      return this.moduleScope[identifier];
     } else if (this.parent !== undefined) {
       return this.parent.get(identifier);
     }
@@ -154,16 +172,6 @@ export class Context implements IContext, ICallableContext, IModuleContext {
     return this.idxToParam.length;
   }
 
-  public getModule(): ASTNodeModule {
-    if (this.module !== undefined) {
-      return this.module;
-    }
-
-    const namespace = this.parent?.getModule();
-    undefinedThrows(namespace);
-    return namespace;
-  }
-
   /**
    * Should be used when the context represents something callable.
    * Appends a parameter to the context which can be read by the callable.
@@ -199,11 +207,12 @@ export class Context implements IContext, ICallableContext, IModuleContext {
     this.localScope[identifier] = value;
   }
 
-  public setExposed(identifier: string, value: ASTNode) {
-    if (this.module === undefined) {
+  public setExport(identifier: string, value: ASTNode) {
+    if (this.moduleExports === undefined) {
       throw Error("Trying to export a variable outside the scope of a module");
     }
-    this.module.scope[identifier] = value;
+
+    this.moduleExports[identifier] = value;
   }
 }
 

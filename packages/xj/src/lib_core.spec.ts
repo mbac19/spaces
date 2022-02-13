@@ -1,12 +1,14 @@
 import * as Types from "./types";
 
 import {
-  Add,
   Boolean,
   Call,
   Efrl,
+  Efrm,
+  Export,
   Define,
   Lambda,
+  Module,
   Number,
   Param,
   String,
@@ -14,12 +16,13 @@ import {
   Void,
   SystemRef,
 } from "./interface";
+import { ASTNodeType } from "./ast";
 import { Container } from "inversify";
+import { Context } from "./context";
 import { Interpreter } from "./interpreter";
 import { performBind } from "./inversify.config";
-import { Context } from "./context";
 
-describe("interpreter", () => {
+describe("lib_core", () => {
   let baseContext: Context;
   let interpreter: Interpreter;
 
@@ -50,6 +53,11 @@ describe("interpreter", () => {
   test("lambda self-evaluates", () => {
     const program = Call(Lambda());
     expect(interpreter.eval(baseContext, program)).toEqual(Void());
+  });
+
+  test("module self-evaluates", () => {
+    const program = Module({});
+    expect(interpreter.eval(baseContext, program)).toEqual(program);
   });
 
   test("system ref self-evaluates", () => {
@@ -84,6 +92,21 @@ describe("interpreter", () => {
     test("returns last evaluation of form", () => {
       const program = Efrl(Number(100), String("hello world"), Number(42));
       expect(interpreter.eval(baseContext, program)).toEqual(Number(42));
+    });
+  });
+
+  describe("imports and exports", () => {
+    test("exporting from non-module throws error", () => {
+      const program = Export("x", Number(100));
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+  });
+
+  describe("efrm", () => {
+    test("empty form returns empty module", () => {
+      const program = Efrm();
+      const evaled = interpreter.eval(baseContext, program);
+      expect(evaled.type).toBe(ASTNodeType.MODULE);
     });
   });
 
@@ -127,20 +150,6 @@ describe("interpreter", () => {
     test("throws when calling a system function that does not exist", () => {
       const program = Call(SystemRef("foo.bar"));
       expect(() => interpreter.eval(baseContext, program)).toThrow();
-    });
-  });
-
-  describe("lib_core", () => {
-    describe("add", () => {
-      test("adds 2 numbers", () => {
-        const program = Add(Number(100), Number(200));
-        expect(interpreter.eval(baseContext, program)).toEqual(Number(300));
-      });
-
-      test("adds many numbers", () => {
-        const program = Add(Number(1), Number(200), Number(123));
-        expect(interpreter.eval(baseContext, program)).toEqual(Number(324));
-      });
     });
   });
 });

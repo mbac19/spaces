@@ -54,7 +54,20 @@ export class STDInterpreter implements Interpreter {
         return last ?? VOID_NODE;
       }
 
+      case ASTNodeType.EFRM: {
+        const innerContext = context.makeChildModuleContext();
+
+        for (const next of node.form) {
+          this.eval(innerContext, next);
+        }
+
+        return innerContext.makeModule();
+      }
+
       case ASTNodeType.LAMBDA:
+        return node;
+
+      case ASTNodeType.MODULE:
         return node;
 
       case ASTNodeType.NUMBER:

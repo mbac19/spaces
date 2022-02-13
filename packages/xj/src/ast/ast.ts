@@ -4,6 +4,8 @@ export type ASTNode =
   | ASTNodeDefine
   | ASTNodeEfrl
   | ASTNodeEfrm
+  | ASTNodeExport
+  | ASTNodeImport
   | ASTNodeKey
   | ASTNodeLambda
   | ASTNodeModule
@@ -24,8 +26,10 @@ export enum ASTNodeType {
   BOOLEAN = "BOOLEAN",
   CALL = "CALL",
   DEFINE = "DEFINE",
-  EFRL = "ERL",
-  EFRM = "ERM",
+  EFRL = "EFRL",
+  EFRM = "EFRM",
+  EXPORT = "EXPORT",
+  IMPORT = "IMPORT",
   KEY = "KEY",
   LAMBDA = "LAMBDA",
   MODULE = "MODULE",
@@ -66,7 +70,18 @@ export interface ASTNodeEfrl {
 
 export interface ASTNodeEfrm {
   type: ASTNodeType.EFRM;
-  value: Array<ASTNode>;
+  form: Array<ASTNode>;
+}
+
+export interface ASTNodeExport {
+  type: ASTNodeType.EXPORT;
+  symbol: string;
+  value: ASTNode;
+}
+
+export interface ASTNodeImport {
+  type: ASTNodeType.IMPORT;
+  symbol: string;
 }
 
 export interface ASTNodeKey {
@@ -81,8 +96,7 @@ export interface ASTNodeLambda {
 
 export interface ASTNodeModule {
   type: ASTNodeType.MODULE;
-  scope: { [symbol: string]: ASTNode };
-  module: { [symbol: string]: ASTNode };
+  exports: { [symbol: string]: ASTNode };
 }
 
 export interface ASTNodeNumber {

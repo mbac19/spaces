@@ -5,7 +5,10 @@ import {
   ASTNodeCallable,
   ASTNodeDefine,
   ASTNodeEfrl,
+  ASTNodeEfrm,
+  ASTNodeExport,
   ASTNodeLambda,
+  ASTNodeModule,
   ASTNodeNumber,
   ASTNodeParam,
   ASTNodeReference,
@@ -15,6 +18,7 @@ import {
   ASTNodeType,
   ASTNodeVoid,
 } from "../ast";
+import { Scope } from "../context";
 
 export function Boolean(value: boolean): ASTNodeBoolean {
   return { type: ASTNodeType.BOOLEAN, value };
@@ -35,6 +39,14 @@ export function Efrl(...form: Array<ASTNode>): ASTNodeEfrl {
   return { type: ASTNodeType.EFRL, form };
 }
 
+export function Efrm(...form: Array<ASTNode>): ASTNodeEfrm {
+  return { type: ASTNodeType.EFRM, form };
+}
+
+export function Export(symbol: string, value: ASTNode): ASTNodeExport {
+  return { type: ASTNodeType.EXPORT, symbol, value };
+}
+
 export function Lambda(...body: Array<ASTNode>): ASTNodeLambda {
   return { type: ASTNodeType.LAMBDA, body };
 }
@@ -45,6 +57,10 @@ export function Number(value: number): ASTNodeNumber {
 
 export function Param(ref: number | string): ASTNodeParam {
   return { type: ASTNodeType.PARAM, ref };
+}
+
+export function Module(exports: Scope): ASTNodeModule {
+  return { type: ASTNodeType.MODULE, exports };
 }
 
 export function String(value: string): ASTNodeString {
