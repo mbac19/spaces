@@ -56,7 +56,10 @@ describe("interpreter", () => {
       expect(() => interpreter.eval(baseContext, Efrl())).toThrow();
     });
 
-    test("returns last evaluation of form", () => {});
+    test("returns last evaluation of form", () => {
+      const program = Efrl(Number(100), String("hello world"), Number(42));
+      expect(interpreter.eval(baseContext, program)).toEqual(Number(42));
+    });
   });
 
   describe("lib_core", () => {
