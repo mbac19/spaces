@@ -1,15 +1,18 @@
 import * as Types from "./types";
 
 import {
+  Add,
   Boolean,
   Call,
   Efrl,
   Define,
   Lambda,
   Number,
+  Param,
   String,
   Symb,
   Void,
+  SystemRef,
 } from "./interface";
 import { Container } from "inversify";
 import { Interpreter } from "./interpreter";
@@ -49,6 +52,13 @@ describe("interpreter", () => {
     expect(interpreter.eval(baseContext, program)).toEqual(Void());
   });
 
+  test("system ref self-evaluates", () => {
+    const program = SystemRef("foo.bar");
+    expect(interpreter.eval(baseContext, program)).toEqual(
+      SystemRef("foo.bar")
+    );
+  });
+
   describe("define", () => {
     test("returns asigned symbol", () => {
       const program = Define("x", Number(12));
@@ -77,7 +87,7 @@ describe("interpreter", () => {
     });
   });
 
-  describe("calling", () => {
+  describe("lambda", () => {
     test("calling empty lambda evaluates to void", () => {
       const program = Call(Lambda());
       expect(interpreter.eval(baseContext, program)).toEqual(Void());
@@ -88,13 +98,49 @@ describe("interpreter", () => {
       expect(interpreter.eval(baseContext, program)).toEqual(Number(100));
     });
 
-    test("calling lambda with parameter", () => {
+    test("calling lambda referenced by symbol", () => {
+      const program = Efrl(Define("fn", Lambda(Number(100))), Call(Symb("fn")));
+    });
+
+    test("calling lambda referenced as param", () => {
+      const program = Efrl(
+        Call(Lambda(Call(Param(0))), Lambda(String("hello world")))
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(
+        String("hello world")
+      );
+    });
+
+    test("calling lambda with parameter by index", () => {
+      const program = Call(Lambda(Param(0)), Number(200));
+      expect(interpreter.eval(baseContext, program)).toEqual(Number(200));
+    });
+
+    test("throws when trying to acquire parameter outside of callable", () => {
+      const program = Param(0);
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+  });
+
+  describe("system_ref", () => {
+    test("throws when calling a system function that does not exist", () => {
+      const program = Call(SystemRef("foo.bar"));
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
     });
   });
 
   describe("lib_core", () => {
     describe("add", () => {
-      test("adds 2 numbers", () => {});
+      test("adds 2 numbers", () => {
+        const program = Add(Number(100), Number(200));
+        expect(interpreter.eval(baseContext, program)).toEqual(Number(300));
+      });
+
+      test("adds many numbers", () => {
+        const program = Add(Number(1), Number(200), Number(123));
+        expect(interpreter.eval(baseContext, program)).toEqual(Number(324));
+      });
     });
   });
 });

@@ -11,7 +11,7 @@ import { Lib } from "./lib";
 import { STDInterpreter } from "./interpreter";
 
 export function performBind(container: Container) {
-  container.bind<[Lib]>(Types.Libs).toDynamicValue(() => [new LibCore()]);
+  container.bind<[Lib]>(Types.Libs).toDynamicValue(() => [LibCore]);
   container.bind<Interpreter>(Types.Interpreter).to(STDInterpreter);
   container.bind<Parser<ASTNode>>(Types.Parser).to(JSONParser);
 }

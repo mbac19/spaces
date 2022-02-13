@@ -1,19 +1,41 @@
-import { ASTNode, ASTNodeCallable, ASTNodeType, ASTNodeVoid } from "../ast";
-import { ICallableContext, IContext } from "../context";
-import { injectable } from "inversify";
+import * as Types from "../types";
+
+import { AnyLibCallable, Lib } from "../lib";
+import { ASTNode, ASTNodeType, ASTNodeVoid, isCallableNode } from "../ast";
+import { IContext, isCallableContext } from "../context";
+import { inject, injectable } from "inversify";
 import { Interpreter } from "./interpreter";
-import { MalformedProgramError, UnresolvedReferenceError } from "../errors";
+import {
+  InvalidCallError,
+  MalformedProgramError,
+  UnresolvedReferenceError,
+  UnresolvedSystemCall,
+} from "../errors";
 
 @injectable()
 export class STDInterpreter implements Interpreter {
+  private readonly libSymbols: Record<string, AnyLibCallable>;
+
+  constructor(@inject(Types.Libs) private readonly libs: Array<Lib>) {
+    const libSymbols: Record<string, AnyLibCallable> = {};
+
+    for (const lib of libs) {
+      for (const callable of Object.values(lib)) {
+        libSymbols[callable.symbol] = callable;
+      }
+    }
+
+    this.libSymbols = libSymbols;
+  }
+
   public eval(context: IContext, node: ASTNode): ASTNode {
     switch (node.type) {
       case ASTNodeType.BOOLEAN:
         return node;
 
       case ASTNodeType.CALL: {
-        const innerContext = context.makeChildCallableContext(node.params);
-        return this.evalCall(innerContext, node.callable, node.params);
+        const callable = this.eval(context, node.callable);
+        return this.evalCall(context, callable, node.params);
       }
 
       case ASTNodeType.DEFINE:
@@ -38,6 +60,16 @@ export class STDInterpreter implements Interpreter {
       case ASTNodeType.NUMBER:
         return node;
 
+      case ASTNodeType.PARAM:
+        if (!isCallableContext(context)) {
+          throw new MalformedProgramError(
+            "Trying to get param outside of a callable"
+          );
+        }
+        return typeof node.ref === "number"
+          ? context.getParamAtIndex(node.ref)
+          : context.getParamForKey(node.ref);
+
       case ASTNodeType.STRING:
         return node;
 
@@ -51,6 +83,9 @@ export class STDInterpreter implements Interpreter {
         return result;
       }
 
+      case ASTNodeType.SYSTEM_REF:
+        return node;
+
       case ASTNodeType.VOID:
         return node;
     }
@@ -59,21 +94,35 @@ export class STDInterpreter implements Interpreter {
   }
 
   public evalCall(
-    context: ICallableContext,
-    callable: ASTNodeCallable,
+    context: IContext,
+    callable: ASTNode,
     params: Array<ASTNode>
   ): ASTNode {
+    if (!isCallableNode(callable)) {
+      throw new InvalidCallError();
+    }
+
     switch (callable.type) {
       case ASTNodeType.LAMBDA: {
+        const innerContext = context.makeChildCallableContext(params);
+
         let last: ASTNode | undefined;
+
         for (const node of callable.body) {
-          last = this.eval(context, node);
+          last = this.eval(innerContext, node);
         }
-        return last || VOID_NODE;
+
+        return last ?? VOID_NODE;
       }
 
       case ASTNodeType.SYSTEM_REF: {
-        throw Error("NOT YET IMPLEMENTED");
+        const systemCallable = this.libSymbols[callable.symbol];
+
+        if (systemCallable === undefined) {
+          throw new UnresolvedSystemCall();
+        }
+
+        return systemCallable.call(context, this, ...params);
       }
     }
   }

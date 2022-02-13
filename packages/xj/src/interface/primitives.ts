@@ -7,6 +7,8 @@ import {
   ASTNodeEfrl,
   ASTNodeLambda,
   ASTNodeNumber,
+  ASTNodeParam,
+  ASTNodeReference,
   ASTNodeString,
   ASTNodeSymbol,
   ASTNodeSystemRef,
@@ -19,7 +21,7 @@ export function Boolean(value: boolean): ASTNodeBoolean {
 }
 
 export function Call(
-  callable: ASTNodeCallable,
+  callable: ASTNodeCallable | ASTNodeReference,
   ...params: Array<ASTNode>
 ): ASTNodeCall {
   return { type: ASTNodeType.CALL, callable, params };
@@ -39,6 +41,10 @@ export function Lambda(...body: Array<ASTNode>): ASTNodeLambda {
 
 export function Number(value: number): ASTNodeNumber {
   return { type: ASTNodeType.NUMBER, value };
+}
+
+export function Param(ref: number | string): ASTNodeParam {
+  return { type: ASTNodeType.PARAM, ref };
 }
 
 export function String(value: string): ASTNodeString {

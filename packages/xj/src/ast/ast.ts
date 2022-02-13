@@ -8,6 +8,7 @@ export type ASTNode =
   | ASTNodeLambda
   | ASTNodeModule
   | ASTNodeNumber
+  | ASTNodeParam
   | ASTNodeString
   | ASTNodeSymbol
   | ASTNodeSystemRef
@@ -16,6 +17,8 @@ export type ASTNode =
 export type Key = string;
 
 export type ASTNodeCallable = ASTNodeLambda | ASTNodeSystemRef;
+
+export type ASTNodeReference = ASTNodeParam | ASTNodeSymbol;
 
 export enum ASTNodeType {
   BOOLEAN = "BOOLEAN",
@@ -34,6 +37,11 @@ export enum ASTNodeType {
   VOID = "VOID",
 }
 
+export const CALLABLE_TYPES: Array<ASTNodeType> = [
+  ASTNodeType.LAMBDA,
+  ASTNodeType.SYSTEM_REF,
+];
+
 export interface ASTNodeBoolean {
   type: ASTNodeType.BOOLEAN;
   value: boolean;
@@ -41,7 +49,7 @@ export interface ASTNodeBoolean {
 
 export interface ASTNodeCall {
   type: ASTNodeType.CALL;
-  callable: ASTNodeCallable;
+  callable: ASTNodeCallable | ASTNodeReference;
   params: Array<ASTNode>;
 }
 

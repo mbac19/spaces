@@ -1,5 +1,7 @@
+import { Add as AddLib } from "../lib_core/add";
 import { ASTNode } from "../ast";
+import { Call, SystemRef } from "./primitives";
 
 export function Add(...params: Array<ASTNode>): ASTNode {
-  throw Error("NOT YET IMPLEMENTED");
+  return Call(SystemRef(AddLib.symbol), ...params);
 }

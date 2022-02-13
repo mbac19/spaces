@@ -65,11 +65,11 @@ export interface ContextDef {
 export class Context implements IContext, ICallableContext, IModuleContext {
   private unassignedKeyParam: string | undefined;
 
-  private readonly keyToParam: Record<string, ASTNode> | undefined;
+  public readonly keyToParam: Record<string, ASTNode> | undefined;
 
-  private readonly idxToParam: Array<ASTNode> | undefined;
+  public readonly idxToParam: Array<ASTNode> | undefined;
 
-  private readonly parent: Context | undefined;
+  public readonly parent: Context | undefined;
 
   private readonly localScope: Scope;
 
@@ -97,7 +97,7 @@ export class Context implements IContext, ICallableContext, IModuleContext {
     params: Array<ASTNode>,
     localScope: Scope | undefined = undefined
   ): ICallableContext {
-    return new Context({ localScope, parent: this });
+    return new Context({ localScope, params, parent: this });
   }
 
   public makeChildModuleContext(
@@ -205,4 +205,14 @@ export class Context implements IContext, ICallableContext, IModuleContext {
     }
     this.module.scope[identifier] = value;
   }
+}
+
+// -----------------------------------------------------------------------------
+// TYPE GUARDS
+// -----------------------------------------------------------------------------
+
+export function isCallableContext(
+  context: IContext
+): context is ICallableContext {
+  return context instanceof Context && context.keyToParam !== undefined;
 }

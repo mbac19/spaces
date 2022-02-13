@@ -1,5 +1,5 @@
 import { ASTNode } from "../ast/ast";
-import { Context } from "../context";
+import { IContext } from "../context";
 import { Interpreter } from "../interpreter";
 
 export type Lib = Record<string, LibCallable<Array<ASTNode>, ASTNode>>;
@@ -11,8 +11,10 @@ export interface LibCallable<
   readonly symbol: string;
 
   call: (
-    context: Context,
+    context: IContext,
     interpreter: Interpreter,
     ...params: TParams
   ) => TReturn;
 }
+
+export type AnyLibCallable = LibCallable<Array<ASTNode>, ASTNode>;
