@@ -26,6 +26,7 @@ export function isTruthy(node: ASTNode): boolean {
     case ASTNodeType.EFRL:
     case ASTNodeType.EFRM:
     case ASTNodeType.EXPORT:
+    case ASTNodeType.FATAL_ERROR:
     case ASTNodeType.IMPORT:
     case ASTNodeType.KEY:
     case ASTNodeType.LAMBDA:

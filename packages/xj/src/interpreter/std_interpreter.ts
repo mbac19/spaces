@@ -16,6 +16,7 @@ import {
   InvalidArguments,
   InvalidCallError,
   MalformedProgramError,
+  RuntimeFatalError,
   UnresolvedReferenceError,
   UnresolvedSystemCall,
 } from "../errors";
@@ -70,6 +71,10 @@ export class STDInterpreter implements Interpreter {
         }
 
         return innerContext.makeModule();
+      }
+
+      case ASTNodeType.FATAL_ERROR: {
+        throw new RuntimeFatalError(node.message);
       }
 
       case ASTNodeType.LAMBDA:

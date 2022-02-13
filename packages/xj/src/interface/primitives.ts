@@ -7,6 +7,7 @@ import {
   ASTNodeEfrl,
   ASTNodeEfrm,
   ASTNodeExport,
+  ASTNodeFatalError,
   ASTNodeLambda,
   ASTNodeLogicalAnd,
   ASTNodeLogicalNot,
@@ -52,6 +53,10 @@ export function Efrm(...form: Array<ASTNode>): ASTNodeEfrm {
 
 export function Export(symbol: string, value: ASTNode): ASTNodeExport {
   return { type: ASTNodeType.EXPORT, symbol, value };
+}
+
+export function FatalError(message?: string): ASTNodeFatalError {
+  return { type: ASTNodeType.FATAL_ERROR, message };
 }
 
 export function Lambda(...body: Array<ASTNode>): ASTNodeLambda {

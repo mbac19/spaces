@@ -18,6 +18,7 @@ import {
   Not,
   And,
   Or,
+  FatalError,
 } from "./interface";
 import { ASTNodeType } from "./ast";
 import { Container } from "inversify";
@@ -68,6 +69,10 @@ describe("lib_core", () => {
     expect(interpreter.eval(baseContext, program)).toEqual(
       SystemRef("foo.bar")
     );
+  });
+
+  test("throwing fatal errors", () => {
+    expect(() => interpreter.eval(baseContext, FatalError())).toThrow();
   });
 
   describe("define", () => {
@@ -148,6 +153,12 @@ describe("lib_core", () => {
       ).toEqual(Number(100));
     });
 
+    test("logical and does not evaluate arguments after first falsy", () => {
+      expect(() =>
+        interpreter.eval(baseContext, And(Boolean(false), FatalError()))
+      ).not.toThrow();
+    });
+
     test("logical or boolean values", () => {
       const table = [
         {
@@ -183,6 +194,12 @@ describe("lib_core", () => {
       expect(
         interpreter.eval(baseContext, Or(Boolean(false), Number(0)))
       ).toEqual(Number(0));
+    });
+
+    test("logical or does not eval arguments after first truthy argument", () => {
+      expect(() =>
+        interpreter.eval(baseContext, Or(Number(100), FatalError()))
+      ).not.toThrow();
     });
   });
 

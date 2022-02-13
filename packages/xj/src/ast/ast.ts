@@ -5,6 +5,7 @@ export type ASTNode =
   | ASTNodeEfrl
   | ASTNodeEfrm
   | ASTNodeExport
+  | ASTNodeFatalError
   | ASTNodeImport
   | ASTNodeKey
   | ASTNodeLambda
@@ -33,6 +34,7 @@ export enum ASTNodeType {
   EFRL = "EFRL",
   EFRM = "EFRM",
   EXPORT = "EXPORT",
+  FATAL_ERROR = "FATAL_ERROR",
   IMPORT = "IMPORT",
   LOGICAL_AND = "LOGICAL_AND",
   LOGICAL_OR = "LOGICAL_OR",
@@ -84,6 +86,11 @@ export interface ASTNodeExport {
   type: ASTNodeType.EXPORT;
   symbol: string;
   value: ASTNode;
+}
+
+export interface ASTNodeFatalError {
+  type: ASTNodeType.FATAL_ERROR;
+  message: string | undefined;
 }
 
 export interface ASTNodeImport {

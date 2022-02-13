@@ -29,3 +29,8 @@ export class UnresolvedSystemCall extends Error {}
  * Throws when the arguments provided to a function are invalid.
  */
 export class InvalidArguments extends Error {}
+
+/**
+ * Throws when there is a fatal error.
+ */
+export class RuntimeFatalError extends Error {}
