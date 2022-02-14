@@ -90,6 +90,60 @@ describe("lib_core", () => {
       const program = Symb("x");
       expect(() => interpreter.eval(baseContext, program)).toThrow();
     });
+
+    test("throws when trying to define a variable containing dots", () => {
+      const program = Define("x.y", Number(100));
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+
+    test("throws when trying to define a variable starting with a number", () => {
+      const program = Define("123hello", String("hello"));
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+
+    test("throws when trying to define a variable starting with a dash", () => {
+      const program = Define("-foo", Boolean(false));
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+
+    test("throws when trying to define an empty variable name", () => {
+      const program = Define("", Boolean(true));
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+
+    test("throws when trying to define a variable with spaces", () => {
+      const program = Define("foo bar", Number(12));
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+
+    test("variables defined later shador earlier variables", () => {
+      const program = Efrl(
+        Define("x", Number(100)),
+        Define("x", String("hello")),
+        Symb("x")
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(String("hello"));
+    });
+
+    test("variables defined in inner scope shadow outter scope variables", () => {
+      const program = Efrl(
+        Define("y", Number(12)),
+        Efrl(Define("y", Number(42)), Symb("y"))
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(Number(42));
+    });
+
+    test("variables in inner scope go out of scope when form is done", () => {
+      const program = Efrl(
+        Define("y", Number(12)),
+        Efrl(Define("y", Number(42)), Symb("y")),
+        Symb("y")
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(Number(12));
+    });
   });
 
   describe("logical", () => {
@@ -226,6 +280,28 @@ describe("lib_core", () => {
       const program = Efrm();
       const evaled = interpreter.eval(baseContext, program);
       expect(evaled.type).toBe(ASTNodeType.MODULE);
+    });
+
+    test("makes module with property", () => {
+      const program = Efrm(Export("foo", Number(100)));
+      const evaled = interpreter.eval(baseContext, program);
+      const expected = Module({ foo: Number(100) });
+      expect(evaled).toEqual(expected);
+    });
+
+    test("export returns a symbol to the set export", () => {
+      throw Error(
+        "Need to implement conditionals before I can properly test this"
+      );
+    });
+
+    test("reference a property from within a module using dot notation", () => {
+      const program = Efrl(
+        Define("foo", Efrm(Export("bar", Number(100)))),
+        Symb("foo.bar")
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(Number(100));
     });
   });
 

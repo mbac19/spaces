@@ -4,6 +4,11 @@
 export class InvalidCallError extends Error {}
 
 /**
+ * Thrown when attempting an invalid variable definition.
+ */
+export class InvalidDefinitionError extends Error {}
+
+/**
  * This is thrown when the program is flawed semantically.
  */
 export class MalformedProgramError extends Error {}

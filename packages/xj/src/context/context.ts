@@ -1,9 +1,14 @@
 import { assert, undefinedThrows } from "@levr/error_utils";
 import { ASTNode, ASTNodeModule, ASTNodeType, isKeyNode } from "../ast";
+import { InvalidDefinitionError, UnresolvedReferenceError } from "../errors";
 import { Scope } from "./scope";
+
+const VARIABLE_IDENTIFIER = /^[a-zA-Z][a-zA-Z\-\?_\$]*$/;
 
 export interface IContext {
   get(symbol: string): ASTNode | undefined;
+
+  getTokenized(tokens: Array<string>): ASTNode | undefined;
 
   /**
    * Sets a variable that is used internally within the scope. This will
@@ -24,6 +29,8 @@ export interface IContext {
   ): ICallableContext;
 
   makeChildModuleContext(localScope?: Scope): IModuleContext;
+
+  asModuleContext(): IModuleContext | undefined;
 }
 
 /**
@@ -122,17 +129,38 @@ export class Context implements IContext, ICallableContext, IModuleContext {
     };
   }
 
+  public asModuleContext(): IModuleContext | undefined {
+    return this.moduleExports === undefined ? undefined : this;
+  }
+
   public get(identifier: string): ASTNode | undefined {
-    if (this.localScope !== undefined && identifier in this.localScope) {
-      return this.localScope[identifier];
-    } else if (
-      this.moduleScope !== undefined &&
-      identifier in this.moduleScope
-    ) {
-      return this.moduleScope[identifier];
-    } else if (this.parent !== undefined) {
-      return this.parent.get(identifier);
+    return this.getTokenized(identifier.split("."));
+  }
+
+  public getTokenized(tokens: Array<string>): ASTNode | undefined {
+    if (tokens.length === 0) {
+      return;
     }
+
+    const first = tokens[0];
+
+    let node: ASTNode;
+
+    if (this.localScope !== undefined && first in this.localScope) {
+      node = this.localScope[first];
+    } else if (this.moduleScope !== undefined && first in this.moduleScope) {
+      node = this.moduleScope[first];
+    } else if (this.parent !== undefined) {
+      return this.parent.getTokenized(tokens);
+    } else {
+      throw new UnresolvedReferenceError();
+    }
+
+    for (let i = 1; i < tokens.length; ++i) {
+      // TODO: IMPLEMENT ME!
+    }
+
+    return node;
   }
 
   public getParamAtIndex(idx: number): ASTNode {
@@ -204,6 +232,10 @@ export class Context implements IContext, ICallableContext, IModuleContext {
   }
 
   public setLocal(identifier: string, value: ASTNode) {
+    if (!VARIABLE_IDENTIFIER.test(identifier)) {
+      throw new InvalidDefinitionError();
+    }
+
     this.localScope[identifier] = value;
   }
 

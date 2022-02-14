@@ -73,6 +73,20 @@ export class STDInterpreter implements Interpreter {
         return innerContext.makeModule();
       }
 
+      case ASTNodeType.EXPORT: {
+        const moduleContext = context.asModuleContext();
+
+        if (moduleContext === undefined) {
+          throw new MalformedProgramError();
+        }
+
+        const next = this.eval(moduleContext, node.value);
+
+        moduleContext.setExport(node.symbol, next);
+
+        return { type: ASTNodeType.SYMBOL, value: node.symbol };
+      }
+
       case ASTNodeType.FATAL_ERROR: {
         throw new RuntimeFatalError(node.message);
       }
