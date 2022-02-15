@@ -14,6 +14,11 @@ export class InvalidDefinitionError extends Error {}
 export class MalformedProgramError extends Error {}
 
 /**
+ * Thrown when searching for a module that cannot be found.
+ */
+export class ModuleNotFoundError extends Error {}
+
+/**
  * Thrown when there is a typing error in the program.
  */
 export class TypeConstraintError extends Error {}

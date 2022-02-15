@@ -1,7 +1,6 @@
-import { Add as AddLib } from "../lib_std/add";
 import { ASTNode } from "../ast";
-import { Call, SystemRef } from "./primitives";
+import { Call, Define, Efrl, Import, Symb } from "./primitives";
 
 export function Add(...params: Array<ASTNode>): ASTNode {
-  return Call(SystemRef(AddLib.symbol), ...params);
+  return Efrl(Define("add", Import("std.add")), Call(Symb("add"), ...params));
 }

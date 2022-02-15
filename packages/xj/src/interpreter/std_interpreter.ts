@@ -1,6 +1,5 @@
 import * as Types from "../types";
 
-import { AnyLibCallable, Lib } from "../lib";
 import {
   ASTNode,
   ASTNodeBoolean,
@@ -18,24 +17,14 @@ import {
   MalformedProgramError,
   RuntimeFatalError,
   UnresolvedReferenceError,
-  UnresolvedSystemCall,
 } from "../errors";
+import { ModuleSystem } from "../module_system/module_system";
 
 @injectable()
 export class STDInterpreter implements Interpreter {
-  private readonly libSymbols: Record<string, AnyLibCallable>;
-
-  constructor(@inject(Types.Libs) private readonly libs: Array<Lib>) {
-    const libSymbols: Record<string, AnyLibCallable> = {};
-
-    for (const lib of libs) {
-      for (const callable of Object.values(lib)) {
-        libSymbols[callable.symbol] = callable;
-      }
-    }
-
-    this.libSymbols = libSymbols;
-  }
+  constructor(
+    @inject(Types.ModuleSystem) private readonly moduleSystem: ModuleSystem
+  ) {}
 
   public eval(context: IContext, node: ASTNode): ASTNode {
     switch (node.type) {
@@ -48,7 +37,7 @@ export class STDInterpreter implements Interpreter {
       }
 
       case ASTNodeType.DEFINE:
-        context.setLocal(node.symbol, node.value);
+        context.setLocal(node.symbol, this.eval(context, node.value));
         return { type: ASTNodeType.SYMBOL, value: node.symbol };
 
       case ASTNodeType.EFRL: {
@@ -89,6 +78,10 @@ export class STDInterpreter implements Interpreter {
 
       case ASTNodeType.FATAL_ERROR: {
         throw new RuntimeFatalError(node.message);
+      }
+
+      case ASTNodeType.IMPORT: {
+        return this.moduleSystem.search(node.symbol);
       }
 
       case ASTNodeType.LAMBDA:
@@ -166,7 +159,7 @@ export class STDInterpreter implements Interpreter {
         return result;
       }
 
-      case ASTNodeType.SYSTEM_REF:
+      case ASTNodeType.SYSTEM_CALLABLE:
         return node;
 
       case ASTNodeType.VOID:
@@ -198,14 +191,8 @@ export class STDInterpreter implements Interpreter {
         return last ?? VOID_NODE;
       }
 
-      case ASTNodeType.SYSTEM_REF: {
-        const systemCallable = this.libSymbols[callable.symbol];
-
-        if (systemCallable === undefined) {
-          throw new UnresolvedSystemCall();
-        }
-
-        return systemCallable.call(context, this, ...params);
+      case ASTNodeType.SYSTEM_CALLABLE: {
+        return callable.call(context, this, ...params);
       }
     }
   }

@@ -7,6 +7,7 @@ import {
   Efrm,
   Export,
   Define,
+  Import,
   Lambda,
   Module,
   Number,
@@ -14,7 +15,6 @@ import {
   String,
   Symb,
   Void,
-  SystemRef,
   Not,
   And,
   Or,
@@ -62,13 +62,6 @@ describe("lib_core", () => {
   test("module self-evaluates", () => {
     const program = Module({});
     expect(interpreter.eval(baseContext, program)).toEqual(program);
-  });
-
-  test("system ref self-evaluates", () => {
-    const program = SystemRef("foo.bar");
-    expect(interpreter.eval(baseContext, program)).toEqual(
-      SystemRef("foo.bar")
-    );
   });
 
   test("throwing fatal errors", () => {
@@ -273,13 +266,21 @@ describe("lib_core", () => {
       const program = Export("x", Number(100));
       expect(() => interpreter.eval(baseContext, program)).toThrow();
     });
+
+    test("importing std module", () => {
+      const program = Import("std");
+
+      expect(interpreter.eval(baseContext, program).type).toBe(
+        ASTNodeType.MODULE
+      );
+    });
   });
 
   describe("efrm", () => {
     test("empty form returns empty module", () => {
       const program = Efrm();
       const evaled = interpreter.eval(baseContext, program);
-      expect(evaled.type).toBe(ASTNodeType.MODULE);
+      expect(evaled).toEqual(Module({}));
     });
 
     test("makes module with property", () => {
@@ -335,15 +336,18 @@ describe("lib_core", () => {
       expect(interpreter.eval(baseContext, program)).toEqual(Number(200));
     });
 
+    test("calling lambda with multiple params", () => {
+      const program = Call(
+        Lambda(And(Param(0), Param(1))),
+        Boolean(true),
+        Boolean(false)
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(Boolean(false));
+    });
+
     test("throws when trying to acquire parameter outside of callable", () => {
       const program = Param(0);
-      expect(() => interpreter.eval(baseContext, program)).toThrow();
-    });
-  });
-
-  describe("system_ref", () => {
-    test("throws when calling a system function that does not exist", () => {
-      const program = Call(SystemRef("foo.bar"));
       expect(() => interpreter.eval(baseContext, program)).toThrow();
     });
   });

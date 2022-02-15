@@ -2,6 +2,7 @@ import {
   ASTNode,
   ASTNodeCallable,
   ASTNodeKey,
+  ASTNodeModule,
   ASTNodeNumber,
   ASTNodeType,
   CALLABLE_TYPES,
@@ -36,7 +37,7 @@ export function isTruthy(node: ASTNode): boolean {
     case ASTNodeType.MODULE:
     case ASTNodeType.PARAM:
     case ASTNodeType.SYMBOL:
-    case ASTNodeType.SYSTEM_REF:
+    case ASTNodeType.SYSTEM_CALLABLE:
       return true;
   }
 }
@@ -55,4 +56,8 @@ export function isKeyNode(node: ASTNode): node is ASTNodeKey {
 
 export function isNumberNode(node: ASTNode): node is ASTNodeNumber {
   return node.type === ASTNodeType.NUMBER;
+}
+
+export function isModuleNode(node: ASTNode): node is ASTNodeModule {
+  return node.type === ASTNodeType.MODULE;
 }

@@ -1,3 +1,6 @@
+import { IContext } from "../context";
+import { Interpreter } from "../interpreter";
+
 export type ASTNode =
   | ASTNodeBoolean
   | ASTNodeCall
@@ -17,14 +20,16 @@ export type ASTNode =
   | ASTNodeParam
   | ASTNodeString
   | ASTNodeSymbol
-  | ASTNodeSystemRef
+  | ASTNodeSystemCallable
   | ASTNodeVoid;
 
 export type Key = string;
 
-export type ASTNodeCallable = ASTNodeLambda | ASTNodeSystemRef;
+export type ASTNodeCallable = ASTNodeLambda | ASTNodeSystemCallable;
 
 export type ASTNodeReference = ASTNodeParam | ASTNodeSymbol;
+
+export type SystemCall = (evaluator: {}) => ASTNode;
 
 export enum ASTNodeType {
   BOOLEAN = "BOOLEAN",
@@ -46,13 +51,13 @@ export enum ASTNodeType {
   PARAM = "PARAM",
   STRING = "STRING",
   SYMBOL = "SYMBOL",
-  SYSTEM_REF = "SYSTEM_REF",
+  SYSTEM_CALLABLE = "SYSTEM_CALLABLE",
   VOID = "VOID",
 }
 
 export const CALLABLE_TYPES: Array<ASTNodeType> = [
   ASTNodeType.LAMBDA,
-  ASTNodeType.SYSTEM_REF,
+  ASTNodeType.SYSTEM_CALLABLE,
 ];
 
 export interface ASTNodeBoolean {
@@ -148,9 +153,14 @@ export interface ASTNodeSymbol {
   value: string;
 }
 
-export interface ASTNodeSystemRef {
-  type: ASTNodeType.SYSTEM_REF;
-  symbol: string;
+export interface ASTNodeSystemCallable {
+  type: ASTNodeType.SYSTEM_CALLABLE;
+
+  call: (
+    context: IContext,
+    interpreter: Interpreter,
+    ...params: Array<ASTNode>
+  ) => ASTNode;
 }
 
 export interface ASTNodeVoid {

@@ -1,5 +1,11 @@
 import { assert, undefinedThrows } from "@levr/error_utils";
-import { ASTNode, ASTNodeModule, ASTNodeType, isKeyNode } from "../ast";
+import {
+  ASTNode,
+  ASTNodeModule,
+  ASTNodeType,
+  isKeyNode,
+  isModuleNode,
+} from "../ast";
 import { InvalidDefinitionError, UnresolvedReferenceError } from "../errors";
 import { Scope } from "./scope";
 
@@ -157,7 +163,11 @@ export class Context implements IContext, ICallableContext, IModuleContext {
     }
 
     for (let i = 1; i < tokens.length; ++i) {
-      // TODO: IMPLEMENT ME!
+      if (!isModuleNode(node)) {
+        return;
+      }
+
+      node = node.exports[tokens[i]];
     }
 
     return node;

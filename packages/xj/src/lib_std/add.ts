@@ -1,13 +1,11 @@
-import { ASTNode, ASTNodeType } from "../ast/ast";
+import { ASTNode, ASTNodeSystemCallable, ASTNodeType } from "../ast/ast";
 import { IContext } from "../context";
 import { Interpreter } from "../interpreter";
-import { LibCallable } from "../lib";
-import { NAMESPACE } from "./constants";
 import { TypeConstraintError } from "../errors";
 import { isNumberNode } from "../ast";
 
-export const Add: LibCallable<Array<ASTNode>, ASTNode> = {
-  symbol: `${NAMESPACE}.add`,
+export const add: ASTNodeSystemCallable = {
+  type: ASTNodeType.SYSTEM_CALLABLE,
 
   call(
     context: IContext,

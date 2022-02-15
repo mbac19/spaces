@@ -1,7 +1,8 @@
-import { Add } from "./add";
+import { add } from "./add";
+import { ASTNodeModule, ASTNodeType } from "../ast";
 
-export * from "./constants";
+export const std: ASTNodeModule = {
+  type: ASTNodeType.MODULE,
 
-export const LibSTD = {
-  [Add.symbol]: Add,
+  exports: { add },
 };

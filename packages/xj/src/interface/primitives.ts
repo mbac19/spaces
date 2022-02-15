@@ -8,6 +8,7 @@ import {
   ASTNodeEfrm,
   ASTNodeExport,
   ASTNodeFatalError,
+  ASTNodeImport,
   ASTNodeLambda,
   ASTNodeLogicalAnd,
   ASTNodeLogicalNot,
@@ -18,7 +19,6 @@ import {
   ASTNodeReference,
   ASTNodeString,
   ASTNodeSymbol,
-  ASTNodeSystemRef,
   ASTNodeType,
   ASTNodeVoid,
 } from "../ast";
@@ -59,6 +59,10 @@ export function FatalError(message?: string): ASTNodeFatalError {
   return { type: ASTNodeType.FATAL_ERROR, message };
 }
 
+export function Import(symbol: string): ASTNodeImport {
+  return { type: ASTNodeType.IMPORT, symbol };
+}
+
 export function Lambda(...body: Array<ASTNode>): ASTNodeLambda {
   return { type: ASTNodeType.LAMBDA, body };
 }
@@ -89,10 +93,6 @@ export function String(value: string): ASTNodeString {
 
 export function Symb(value: string): ASTNodeSymbol {
   return { type: ASTNodeType.SYMBOL, value };
-}
-
-export function SystemRef(symbol: string): ASTNodeSystemRef {
-  return { type: ASTNodeType.SYSTEM_REF, symbol };
 }
 
 export function Void(): ASTNodeVoid {
