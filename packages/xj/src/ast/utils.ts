@@ -31,6 +31,7 @@ export function isTruthy(node: ASTNode): boolean {
     case ASTNodeType.IMPORT:
     case ASTNodeType.KEY:
     case ASTNodeType.LAMBDA:
+    case ASTNodeType.MATCH:
     case ASTNodeType.LOGICAL_AND:
     case ASTNodeType.LOGICAL_NOT:
     case ASTNodeType.LOGICAL_OR:

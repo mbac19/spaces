@@ -13,6 +13,7 @@ import {
   ASTNodeLogicalAnd,
   ASTNodeLogicalNot,
   ASTNodeLogicalOr,
+  ASTNodeMatch,
   ASTNodeModule,
   ASTNodeNumber,
   ASTNodeParam,
@@ -24,7 +25,9 @@ import {
 } from "../ast";
 import { Scope } from "../context";
 
-export function And<T extends AtLeastTwoNodes>(...value: T): ASTNodeLogicalAnd {
+export function And<T extends AtLeastTwo<ASTNode>>(
+  ...value: T
+): ASTNodeLogicalAnd {
   return { type: ASTNodeType.LOGICAL_AND, value };
 }
 
@@ -75,12 +78,20 @@ export function Number(value: number): ASTNodeNumber {
   return { type: ASTNodeType.NUMBER, value };
 }
 
-export function Or<T extends AtLeastTwoNodes>(...value: T): ASTNodeLogicalOr {
+export function Or<T extends AtLeastTwo<ASTNode>>(
+  ...value: T
+): ASTNodeLogicalOr {
   return { type: ASTNodeType.LOGICAL_OR, value };
 }
 
 export function Param(ref: number | string): ASTNodeParam {
   return { type: ASTNodeType.PARAM, ref };
+}
+
+export function Match(
+  ...matchers: AtLeastOne<[ASTNode, ASTNode]>
+): ASTNodeMatch {
+  return { type: ASTNodeType.MATCH, matchers };
 }
 
 export function Module(exports: Scope): ASTNodeModule {
@@ -99,4 +110,6 @@ export function Void(): ASTNodeVoid {
   return { type: ASTNodeType.VOID };
 }
 
-type AtLeastTwoNodes = [ASTNode, ASTNode, ...Array<ASTNode>];
+type AtLeastOne<T> = [T, ...Array<T>];
+
+type AtLeastTwo<T> = [T, T, ...Array<T>];

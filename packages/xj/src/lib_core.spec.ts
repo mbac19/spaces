@@ -9,6 +9,7 @@ import {
   Define,
   Import,
   Lambda,
+  Match,
   Module,
   Number,
   Param,
@@ -250,6 +251,60 @@ describe("lib_core", () => {
     });
   });
 
+  describe("match", () => {
+    test("single case matcher", () => {
+      const program = Efrl(
+        Define("x", Number(100)),
+        Match([Boolean(true), String("Always matches")])
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(
+        String("Always matches")
+      );
+    });
+
+    test("matcher matches first matching predicate", () => {
+      const program = Efrl(
+        Match(
+          [Boolean(true), String("Match 1")],
+          [Boolean(true), String("Match 2")]
+        )
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(String("Match 1"));
+    });
+
+    test("matcher only evaluates matching cases", () => {
+      const program = Efrl(
+        Match(
+          [Boolean(true), String("Match")],
+          [Boolean(true), FatalError("Unexpected error")]
+        )
+      );
+
+      expect(() => interpreter.eval(baseContext, program)).not.toThrow();
+    });
+
+    test("matcher does not evaluate predicates that are not tested", () => {
+      const program = Efrl(
+        Match(
+          [Boolean(true), String("foo")],
+          [FatalError("Unexpected Error"), Void()]
+        )
+      );
+
+      expect(() => interpreter.eval(baseContext, program)).not.toThrow();
+    });
+
+    test("matcher throws error if there is no match", () => {
+      const program = Efrl(
+        Match([Boolean(false), String("foo")], [Boolean(false), Void()])
+      );
+
+      expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+  });
+
   describe("efrl", () => {
     test("empty form returns void", () => {
       expect(interpreter.eval(baseContext, Efrl())).toEqual(Void());
@@ -349,6 +404,15 @@ describe("lib_core", () => {
     test("throws when trying to acquire parameter outside of callable", () => {
       const program = Param(0);
       expect(() => interpreter.eval(baseContext, program)).toThrow();
+    });
+  });
+
+  describe("loops", () => {
+    test("loop through a sequence", () => {
+      throw Error(
+        "Need conditionals before I can properly implement a finite sequence"
+      );
+      const program = Module({ __iter__: Lambda(Param(0)) });
     });
   });
 });

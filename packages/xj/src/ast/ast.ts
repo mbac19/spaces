@@ -15,6 +15,7 @@ export type ASTNode =
   | ASTNodeLogicalAnd
   | ASTNodeLogicalNot
   | ASTNodeLogicalOr
+  | ASTNodeMatch
   | ASTNodeModule
   | ASTNodeNumber
   | ASTNodeParam
@@ -41,11 +42,12 @@ export enum ASTNodeType {
   EXPORT = "EXPORT",
   FATAL_ERROR = "FATAL_ERROR",
   IMPORT = "IMPORT",
+  KEY = "KEY",
   LOGICAL_AND = "LOGICAL_AND",
   LOGICAL_OR = "LOGICAL_OR",
   LOGICAL_NOT = "LOGICAL_NOT",
-  KEY = "KEY",
   LAMBDA = "LAMBDA",
+  MATCH = "MATCH",
   MODULE = "MODULE",
   NUMBER = "NUMBER",
   PARAM = "PARAM",
@@ -126,6 +128,11 @@ export interface ASTNodeLogicalOr {
 export interface ASTNodeLogicalNot {
   type: ASTNodeType.LOGICAL_NOT;
   value: ASTNode;
+}
+
+export interface ASTNodeMatch {
+  type: ASTNodeType.MATCH;
+  matchers: Array<[ASTNode, ASTNode]>;
 }
 
 export interface ASTNodeModule {

@@ -130,6 +130,20 @@ export class STDInterpreter implements Interpreter {
         return last;
       }
 
+      case ASTNodeType.MATCH: {
+        if (node.matchers.length === 0) {
+          throw new MalformedProgramError("Empty matcher");
+        }
+
+        for (const [predicate, next] of node.matchers) {
+          if (isTruthy(this.eval(context, predicate))) {
+            return this.eval(context, next);
+          }
+        }
+
+        throw new MalformedProgramError("Matcher failed to match on any cases");
+      }
+
       case ASTNodeType.MODULE:
         return node;
 
