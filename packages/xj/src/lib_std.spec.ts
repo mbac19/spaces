@@ -1,6 +1,6 @@
 import * as Types from "./types";
 
-import { Add, Number } from "./interface";
+import { Add, First, Number, Range, Void } from "./interface";
 import { Container } from "inversify";
 import { Context } from "./context";
 import { Interpreter } from "./interpreter";
@@ -38,7 +38,15 @@ describe("lib_std", () => {
     });
 
     test("query first element of range", () => {
-      throw Error("HERE I AM");
+      const program1 = First(Range(100));
+      const program2 = First(Range(50, 70));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Number(0));
+      expect(interpreter.eval(baseContext, program2)).toEqual(Number(50));
+    });
+
+    test("query first element of empty range", () => {
+      const program1 = First(Range(0));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Void());
     });
   });
 });

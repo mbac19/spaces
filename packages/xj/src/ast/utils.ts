@@ -1,3 +1,5 @@
+import { ASTNodeReference } from ".";
+import { MalformedProgramError } from "../errors";
 import {
   ASTNode,
   ASTNodeCallable,
@@ -61,4 +63,18 @@ export function isNumberNode(node: ASTNode): node is ASTNodeNumber {
 
 export function isModuleNode(node: ASTNode): node is ASTNodeModule {
   return node.type === ASTNodeType.MODULE;
+}
+
+export function isReferenceNode(node: ASTNode): node is ASTNodeReference {
+  return (
+    node.type === ASTNodeType.SYMBOL ||
+    node.type === ASTNodeType.PARAM ||
+    node.type === ASTNodeType.IMPORT
+  );
+}
+
+export function assertNumberNode(node: ASTNode): asserts node is ASTNodeNumber {
+  if (!isNumberNode(node)) {
+    throw new MalformedProgramError("Expecting node to be type number");
+  }
 }

@@ -1,3 +1,3 @@
 import { ASTNode } from "../ast";
 
-export type Scope = Record<string, ASTNode>;
+export type Scope = { [symbol: string]: ASTNode };

@@ -1,9 +1,12 @@
 import { ASTNode } from "../ast";
-import { Call, Efrl, Import, Number } from "./primitives";
+import { Call, Import, Number } from "./primitives";
 
-export function Range(start: number, end?: number): ASTNode {
-  const params =
-    end === undefined ? [Number(start)] : [Number(start), Number(end)];
+export function Range(a: number, b?: number): ASTNode {
+  const params = b === undefined ? [Number(a)] : [Number(a), Number(b)];
 
-  return Efrl(Call(Import("std.range"), ...params));
+  return Call(Import("std.range"), ...params);
+}
+
+export function First(node: ASTNode): ASTNode {
+  return Call(Import("std.first"), node);
 }

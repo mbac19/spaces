@@ -1,4 +1,4 @@
-import { IContext } from "../context";
+import { IContext, Scope } from "../context";
 import { Interpreter } from "../interpreter";
 
 export type ASTNode =
@@ -135,9 +135,9 @@ export interface ASTNodeMatch {
   matchers: Array<[ASTNode, ASTNode]>;
 }
 
-export interface ASTNodeModule {
+export interface ASTNodeModule<TExports extends Scope = Scope> {
   type: ASTNodeType.MODULE;
-  exports: { [symbol: string]: ASTNode };
+  exports: TExports;
 }
 
 export interface ASTNodeNumber {

@@ -9,6 +9,11 @@ export class InvalidCallError extends Error {}
 export class InvalidDefinitionError extends Error {}
 
 /**
+ *
+ */
+export class IncorrectArguments extends Error {}
+
+/**
  * This is thrown when the program is flawed semantically.
  */
 export class MalformedProgramError extends Error {}
@@ -44,3 +49,9 @@ export class InvalidArguments extends Error {}
  * Throws when there is a fatal error.
  */
 export class RuntimeFatalError extends Error {}
+
+export function assertProgram(flag: unknown, msg?: string) {
+  if (!flag) {
+    throw new MalformedProgramError(msg ?? "Assertion failed");
+  }
+}

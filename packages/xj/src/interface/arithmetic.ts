@@ -1,5 +1,5 @@
 import { ASTNode } from "../ast";
-import { AtLeastOne, AtLeastTwo } from "./_utils";
+import { AtLeastTwo } from "./_utils";
 import { Call, Define, Efrl, Import, Symb } from "./primitives";
 
 export function Add(...params: AtLeastTwo<ASTNode>): ASTNode {
