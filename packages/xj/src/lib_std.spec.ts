@@ -1,6 +1,6 @@
 import * as Types from "./types";
 
-import { Add, First, Number, Range, Void } from "./interface";
+import { Add, Count, First, Number, Range, Void } from "./interface";
 import { Container } from "inversify";
 import { Context } from "./context";
 import { Interpreter } from "./interpreter";
@@ -48,5 +48,18 @@ describe("lib_std", () => {
       const program1 = First(Range(0));
       expect(interpreter.eval(baseContext, program1)).toEqual(Void());
     });
+
+    test("query count of range", () => {
+      const program1 = Count(Range(0));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Number(0));
+
+      const program2 = Count(Range(50));
+      expect(interpreter.eval(baseContext, program2)).toEqual(Number(50));
+
+      const program3 = Count(Range(30, 50));
+      expect(interpreter.eval(baseContext, program3)).toEqual(Number(20));
+    });
   });
+
+  describe("list", () => {});
 });
