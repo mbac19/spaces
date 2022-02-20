@@ -303,6 +303,15 @@ describe("lib_core", () => {
 
       expect(() => interpreter.eval(baseContext, program)).toThrow();
     });
+
+    test("matcher matches truthy predicates", () => {
+      const program = Match(
+        [Void(), String("DO NOT MATCH")],
+        [Number(100), String("MATCH")]
+      );
+
+      expect(interpreter.eval(baseContext, program)).toEqual(String("MATCH"));
+    });
   });
 
   describe("efrl", () => {

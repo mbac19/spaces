@@ -23,6 +23,7 @@ import {
   ASTNodeType,
   ASTNodeVoid,
 } from "../ast";
+import { AtLeastOne, AtLeastTwo } from "./_utils";
 import { Scope } from "../context";
 
 export function And<T extends AtLeastTwo<ASTNode>>(
@@ -109,7 +110,3 @@ export function Symb(value: string): ASTNodeSymbol {
 export function Void(): ASTNodeVoid {
   return { type: ASTNodeType.VOID };
 }
-
-type AtLeastOne<T> = [T, ...Array<T>];
-
-type AtLeastTwo<T> = [T, T, ...Array<T>];

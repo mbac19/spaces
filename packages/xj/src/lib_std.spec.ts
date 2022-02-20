@@ -31,4 +31,14 @@ describe("lib_std", () => {
       expect(interpreter.eval(baseContext, program)).toEqual(Number(324));
     });
   });
+
+  describe("range", () => {
+    test("query if a number is within a range", () => {
+      throw Error("need to defined 'in' operation with collections");
+    });
+
+    test("query first element of range", () => {
+      throw Error("HERE I AM");
+    });
+  });
 });

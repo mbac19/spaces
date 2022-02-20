@@ -28,7 +28,7 @@ export type Key = string;
 
 export type ASTNodeCallable = ASTNodeLambda | ASTNodeSystemCallable;
 
-export type ASTNodeReference = ASTNodeParam | ASTNodeSymbol;
+export type ASTNodeReference = ASTNodeParam | ASTNodeSymbol | ASTNodeImport;
 
 export type SystemCall = (evaluator: {}) => ASTNode;
 
