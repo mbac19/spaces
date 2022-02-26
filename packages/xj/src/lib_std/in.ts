@@ -7,7 +7,7 @@ import {
 import { IContext } from "../context";
 import { IncorrectArguments } from "../errors";
 import { Interpreter } from "../interpreter";
-import { isRangeNode } from "./ast";
+import { isListNode, isRangeNode } from "./ast";
 
 export const $in: ASTNodeSystemCallable = {
   type: ASTNodeType.SYSTEM_CALLABLE,

@@ -2,6 +2,7 @@ import {
   ASTNode,
   ASTNodeCallable,
   ASTNodeModule,
+  ASTNodeReference,
   ASTNodeType,
   isModuleNode,
 } from "../ast";
@@ -45,11 +46,11 @@ export interface ListNode extends ASTNodeModule<ListExports> {
 }
 
 // -----------------------------------------------------------------------------
-// Addable
+// ADDABLE
 // -----------------------------------------------------------------------------
 
 export interface AddableExports extends Scope {
-  __add__: ASTNodeCallable;
+  __add__: ASTNodeCallable | ASTNodeReference;
 }
 
 export interface AddableNode extends ASTNodeModule<AddableExports> {}
@@ -57,6 +58,16 @@ export interface AddableNode extends ASTNodeModule<AddableExports> {}
 export function isAddable(node: ASTNode): node is AddableNode {
   return isModuleNode(node) && "__add__" in node.exports;
 }
+
+// -----------------------------------------------------------------------------
+// EQUATABLE
+// -----------------------------------------------------------------------------
+
+export interface EquatableExports extends Scope {
+  __eq__: ASTNodeCallable | ASTNodeReference;
+}
+
+export interface EquatableNodeModule extends ASTNodeModule<EquatableExports> {}
 
 // -----------------------------------------------------------------------------
 // TYPE GUARDS
@@ -80,4 +91,10 @@ export function isListNode(node: ASTNode): node is ListNode {
     "list" in node &&
     node["list"] === ListSymbol
   );
+}
+
+export function isEquatableNodeModule(
+  node: ASTNode
+): node is EquatableNodeModule {
+  return node.type === ASTNodeType.MODULE && "__eq__" in node.exports;
 }

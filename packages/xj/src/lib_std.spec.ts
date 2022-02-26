@@ -112,5 +112,13 @@ describe("lib_std", () => {
       const program1 = First(List(Number(100), FatalError("FOO")));
       expect(interpreter.eval(baseContext, program1)).toEqual(Number(100));
     });
+
+    test("check if element is in list", () => {
+      const program1 = In(Number(100), List(Number(400)));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Boolean(false));
+
+      const program2 = In(Number(200), List(Number(100), Number(200)));
+      expect(interpreter.eval(baseContext, program2)).toEqual(Boolean(true));
+    });
   });
 });

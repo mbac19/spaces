@@ -1,4 +1,4 @@
-import { ASTNodeReference } from ".";
+import { ASTNodeReference, ASTNodeVoid } from ".";
 import { MalformedProgramError } from "../errors";
 import {
   ASTNode,
@@ -71,6 +71,10 @@ export function isReferenceNode(node: ASTNode): node is ASTNodeReference {
     node.type === ASTNodeType.PARAM ||
     node.type === ASTNodeType.IMPORT
   );
+}
+
+export function isVoidNode(node: ASTNode): node is ASTNodeVoid {
+  return node.type === ASTNodeType.VOID;
 }
 
 export function assertNumberNode(node: ASTNode): asserts node is ASTNodeNumber {
