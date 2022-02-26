@@ -1,5 +1,6 @@
-import { ASTNode } from "../ast";
+import { ASTNode, ASTNodeReference } from "../ast";
 import { Call, Import, Number } from "./primitives";
+import { SequenceNode } from "../lib_std/ast";
 
 export function Count(node: ASTNode): ASTNode {
   return Call(Import("std.count"), node);
@@ -7,6 +8,10 @@ export function Count(node: ASTNode): ASTNode {
 
 export function First(node: ASTNode): ASTNode {
   return Call(Import("std.first"), node);
+}
+
+export function In(node: ASTNode, seq: ASTNode) {
+  return Call(Import("std.in"), node, seq);
 }
 
 export function Range(a: number, b?: number): ASTNode {

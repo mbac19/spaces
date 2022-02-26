@@ -2,7 +2,7 @@ import { ASTNode, ASTNodeSystemCallable, ASTNodeType } from "../ast";
 import { IContext } from "../context";
 import { IncorrectArguments } from "../errors";
 import { Interpreter } from "../interpreter";
-import { isRangeNode } from "./ast";
+import { isListNode, isRangeNode } from "./ast";
 
 export const count: ASTNodeSystemCallable = {
   type: ASTNodeType.SYSTEM_CALLABLE,
@@ -23,7 +23,14 @@ export const count: ASTNodeSystemCallable = {
     if (isRangeNode(sequence)) {
       return {
         type: ASTNodeType.NUMBER,
-        value: Math.max(sequence.end - sequence.start),
+        value: Math.max(sequence.end - sequence.start, 0),
+      };
+    }
+
+    if (isListNode(sequence)) {
+      return {
+        type: ASTNodeType.NUMBER,
+        value: sequence.nodes.length,
       };
     }
 

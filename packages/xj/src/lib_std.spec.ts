@@ -1,6 +1,17 @@
 import * as Types from "./types";
 
-import { Add, Count, First, Number, Range, Void } from "./interface";
+import {
+  Add,
+  Boolean,
+  Count,
+  FatalError,
+  First,
+  In,
+  List,
+  Number,
+  Range,
+  Void,
+} from "./interface";
 import { Container } from "inversify";
 import { Context } from "./context";
 import { Interpreter } from "./interpreter";
@@ -34,7 +45,17 @@ describe("lib_std", () => {
 
   describe("range", () => {
     test("query if a number is within a range", () => {
-      throw Error("need to defined 'in' operation with collections");
+      const program1 = In(Number(0), Range(100));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Boolean(true));
+
+      const program2 = In(Number(-10), Range(100));
+      expect(interpreter.eval(baseContext, program2)).toEqual(Boolean(false));
+
+      const program3 = In(Number(100), Range(100));
+      expect(interpreter.eval(baseContext, program3)).toEqual(Boolean(false));
+
+      const program4 = In(Number(75), Range(50, 100));
+      expect(interpreter.eval(baseContext, program4)).toEqual(Boolean(true));
     });
 
     test("query first element of range", () => {
@@ -49,7 +70,11 @@ describe("lib_std", () => {
       expect(interpreter.eval(baseContext, program1)).toEqual(Void());
     });
 
-    test("query count of range", () => {
+    test("query first element that meets criteria", () => {
+      throw Error("NEED MORE BOOLEAN OPERATORS");
+    });
+
+    test("query count of finite range", () => {
       const program1 = Count(Range(0));
       expect(interpreter.eval(baseContext, program1)).toEqual(Number(0));
 
@@ -59,7 +84,33 @@ describe("lib_std", () => {
       const program3 = Count(Range(30, 50));
       expect(interpreter.eval(baseContext, program3)).toEqual(Number(20));
     });
+
+    test("query count of infinite range", () => {
+      const program1 = Count(Range(Infinity));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Number(Infinity));
+
+      const program2 = Count(Range(30, Infinity));
+      expect(interpreter.eval(baseContext, program2)).toEqual(Number(Infinity));
+    });
   });
 
-  describe("list", () => {});
+  describe("list", () => {
+    test("count list", () => {
+      const program1 = Count(List(Number(1), Number(2), Number(3)));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Number(3));
+
+      const program2 = Count(List());
+      expect(interpreter.eval(baseContext, program2)).toEqual(Number(0));
+    });
+
+    test("lazy eval list elements", () => {
+      const program1 = List(FatalError("Foo"));
+      expect(() => interpreter.eval(baseContext, program1)).not.toThrow();
+    });
+
+    test("first does not eval elements outside of first element", () => {
+      const program1 = First(List(Number(100), FatalError("FOO")));
+      expect(interpreter.eval(baseContext, program1)).toEqual(Number(100));
+    });
+  });
 });

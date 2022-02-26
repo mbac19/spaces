@@ -1,4 +1,10 @@
-import { ASTNode, ASTNodeCallable, ASTNodeModule, ASTNodeType } from "../ast";
+import {
+  ASTNode,
+  ASTNodeCallable,
+  ASTNodeModule,
+  ASTNodeType,
+  isModuleNode,
+} from "../ast";
 import { Scope } from "../context";
 
 // -----------------------------------------------------------------------------
@@ -29,9 +35,28 @@ export interface RangeNode extends ASTNodeModule<RangeExports> {
 // LIST
 // -----------------------------------------------------------------------------
 
+export const ListSymbol = Symbol.for("List");
+
 export interface ListExports extends SequenceExports {}
 
-export interface ListNode extends ASTNodeModule<ListExports> {}
+export interface ListNode extends ASTNodeModule<ListExports> {
+  list: Symbol;
+  nodes: Array<ASTNode>;
+}
+
+// -----------------------------------------------------------------------------
+// Addable
+// -----------------------------------------------------------------------------
+
+export interface AddableExports extends Scope {
+  __add__: ASTNodeCallable;
+}
+
+export interface AddableNode extends ASTNodeModule<AddableExports> {}
+
+export function isAddable(node: ASTNode): node is AddableNode {
+  return isModuleNode(node) && "__add__" in node.exports;
+}
 
 // -----------------------------------------------------------------------------
 // TYPE GUARDS
@@ -46,5 +71,13 @@ export function isRangeNode(node: ASTNode): node is RangeNode {
     node.type === ASTNodeType.MODULE &&
     "range" in node &&
     node["range"] === RangeSymbol
+  );
+}
+
+export function isListNode(node: ASTNode): node is ListNode {
+  return (
+    node.type === ASTNodeType.MODULE &&
+    "list" in node &&
+    node["list"] === ListSymbol
   );
 }
