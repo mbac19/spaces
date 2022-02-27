@@ -4,7 +4,7 @@ import { IncorrectArguments } from "../errors";
 import { Interpreter } from "../interpreter";
 import { isEquatableNodeModule } from "./ast";
 
-export const eq: ASTNodeSystemCallable = {
+export const equals: ASTNodeSystemCallable = {
   type: ASTNodeType.SYSTEM_CALLABLE,
 
   call(

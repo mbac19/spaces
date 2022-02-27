@@ -4,12 +4,14 @@ import {
   Add,
   Boolean,
   Count,
+  Equals,
   FatalError,
   First,
   In,
   List,
   Number,
   Range,
+  String,
   Void,
 } from "./interface";
 import { Container } from "inversify";
@@ -40,6 +42,24 @@ describe("lib_std", () => {
     test("adds many numbers", () => {
       const program = Add(Number(1), Number(200), Number(123));
       expect(interpreter.eval(baseContext, program)).toEqual(Number(324));
+    });
+  });
+
+  describe("equals", () => {
+    test("checks if 2 numbers are equal", () => {
+      const p1 = Equals(Number(100), Number(100));
+      expect(interpreter.eval(baseContext, p1)).toEqual(Boolean(true));
+
+      const p2 = Equals(Number(100), Number(40));
+      expect(interpreter.eval(baseContext, p2)).toEqual(Boolean(false));
+    });
+
+    test("checks if 2 strings are equal", () => {
+      const p1 = Equals(String("hello"), String("world"));
+      expect(interpreter.eval(baseContext, p1)).toEqual(Boolean(false));
+
+      const p2 = Equals(String("foo"), String("foo"));
+      expect(interpreter.eval(baseContext, p2)).toEqual(Boolean(true));
     });
   });
 
